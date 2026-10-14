@@ -3,14 +3,15 @@ import { site } from "@/lib/config";
 import { href } from "@/lib/format";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import { SparkleIcon } from "./Sparkle";
+import { Logo } from "./Wordmark";
 
 export function Footer({ locale, t }: { locale: Locale; t: Dictionary }) {
   return (
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <Link href={href(locale)} className="wordmark">
-            CAPRAVA
+          <Link href={href(locale)} className="wordmark footer-logo" aria-label="CAPRAVA">
+            <Logo />
           </Link>
           <p className="muted">{t.footer.tagline}</p>
           <p className="footer-from">

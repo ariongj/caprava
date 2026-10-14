@@ -7,6 +7,7 @@ import { EmailCapture } from "@/components/Forms";
 import { NotesPyramid } from "@/components/Notes";
 import { ProductCard } from "@/components/ProductCard";
 import { Divider } from "@/components/Sparkle";
+import { ProductName } from "@/components/Wordmark";
 import { site, sizes } from "@/lib/config";
 import { href } from "@/lib/format";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
@@ -55,7 +56,7 @@ export default async function ProductPage({ params }: { params: Promise<{ lang: 
     : null;
 
   return (
-    <div className="container page" style={{ "--accent": product.hex.accent, "--glow": product.hex.glow } as React.CSSProperties}>
+    <div className="container page" data-mist={product.hex.glow} style={{ "--accent": product.hex.accent, "--glow": product.hex.glow } as React.CSSProperties}>
       {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Link href={href(lang, "/shop")}>{t.nav.shop}</Link>
@@ -68,13 +69,15 @@ export default async function ProductPage({ params }: { params: Promise<{ lang: 
       <div className="pdp">
         <div className="pdp-media">
           <div className="pdp-glow" aria-hidden="true" />
-          <Bottle product={product} className="pdp-bottle" />
+          <Bottle product={product} className="pdp-bottle" eager />
         </div>
         <div className="pdp-info">
           <p className="eyebrow">
             {product.gender === "her" ? t.common.forHer : t.common.forHim} · {product.color[lang]}
           </p>
-          <h1 className="pdp-name">{name}</h1>
+          <h1 className="pdp-name">
+            <ProductName product={product} name={name} />
+          </h1>
           <p className="pdp-character">{product.named ? product.character[lang] : t.product.nameSoon}</p>
           <p className="pdp-tagline">{product.tagline[lang]}</p>
           <p className="pdp-description">{product.description[lang]}</p>

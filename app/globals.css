@@ -277,12 +277,39 @@ button {
 }
 
 .wordmark {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.35rem;
-  letter-spacing: 0.32em;
-  margin-right: -0.32em;
   justify-self: center;
+  color: var(--text);
+}
+
+.wordmark-logo {
+  display: block;
+  height: 26px;
+  aspect-ratio: 2984 / 688;
+  background: currentColor;
+  -webkit-mask: url(/brand/caprava.svg) center / contain no-repeat;
+  mask: url(/brand/caprava.svg) center / contain no-repeat;
+}
+
+.footer-logo .wordmark-logo {
+  height: 36px;
+}
+
+.product-wordmark {
+  display: inline-block;
+  height: 0.8em;
+  max-width: 100%;
+  aspect-ratio: var(--ratio);
+  vertical-align: -0.04em;
+  background: currentColor;
+  -webkit-mask: var(--wordmark) left center / contain no-repeat;
+  mask: var(--wordmark) left center / contain no-repeat;
+}
+
+.bottle-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .header-actions {
@@ -434,10 +461,8 @@ button {
     justify-self: start;
   }
 
-  .wordmark {
-    font-size: 1.1rem;
-    letter-spacing: 0.26em;
-    margin-right: -0.26em;
+  .wordmark-logo {
+    height: 22px;
   }
 
   .lang-switch {
@@ -454,10 +479,8 @@ button {
     grid-template-columns: 44px 1fr auto;
   }
 
-  .wordmark {
-    font-size: 1rem;
-    letter-spacing: 0.2em;
-    margin-right: -0.2em;
+  .wordmark-logo {
+    height: 19px;
   }
 
   .lang-switch a {
@@ -597,27 +620,35 @@ button {
   grid-column: 2;
   grid-row: 1 / span 2;
   position: relative;
-  min-height: 420px;
+  min-height: 520px;
 }
 
-.hero-bottle {
+.hero-tile {
   position: absolute;
-  height: auto;
-  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6));
+  display: block;
+  aspect-ratio: 540 / 840;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 50px 120px -40px color-mix(in srgb, var(--glow) 70%, transparent), 0 30px 60px -20px rgba(0, 0, 0, 0.8);
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
-.hero-bottle-front {
-  width: min(56%, 300px);
-  left: 18%;
+.hero-tile:hover {
+  transform: translateY(-8px);
+}
+
+.hero-tile-front {
+  width: min(46%, 290px);
+  left: 10%;
   bottom: 0;
+  z-index: 1;
   animation: float 9s ease-in-out infinite;
 }
 
-.hero-bottle-back {
-  width: min(44%, 240px);
-  right: 6%;
-  bottom: 12%;
-  opacity: 0.95;
+.hero-tile-back {
+  width: min(38%, 240px);
+  right: 4%;
+  top: 4%;
   animation: float 11s ease-in-out infinite reverse;
 }
 
@@ -662,24 +693,24 @@ button {
     grid-column: 1;
     grid-row: auto;
     min-height: 0;
-    height: 340px;
+    height: min(110vw, 460px);
   }
 
-  .hero-bottle-front {
-    width: 46%;
-    left: 14%;
+  .hero-tile-front {
+    width: 50%;
+    left: 6%;
   }
 
-  .hero-bottle-back {
-    width: 36%;
-    right: 10%;
+  .hero-tile-back {
+    width: 42%;
+    right: 4%;
   }
 }
 
 /* ---------- Sections ---------- */
 
 .section {
-  padding: clamp(48px, 8vw, 96px) 0 0;
+  padding-top: clamp(48px, 8vw, 96px);
 }
 
 .page {
@@ -793,15 +824,18 @@ button {
   transform: translateY(-3px);
 }
 
+.launch-media {
+  aspect-ratio: 540 / 840;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
 .launch-bottle {
-  width: 100%;
-  max-width: 220px;
-  margin: 0 auto;
-  transition: transform 0.6s;
+  transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .launch-card:hover .launch-bottle {
-  transform: scale(1.04) rotate(-2deg);
+  transform: scale(1.05);
 }
 
 .launch-body h3 {
@@ -838,8 +872,9 @@ button {
     text-align: center;
   }
 
-  .launch-bottle {
-    max-width: 160px;
+  .launch-media {
+    max-width: 220px;
+    margin: 0 auto;
   }
 }
 
@@ -937,15 +972,21 @@ button {
   text-align: center;
 }
 
-.collection-bottle {
+.collection-media {
+  display: block;
   width: 100%;
-  max-width: 120px;
+  aspect-ratio: 540 / 840;
+  border-radius: var(--radius);
+  overflow: hidden;
   margin-bottom: 12px;
-  transition: transform 0.4s;
+}
+
+.collection-bottle {
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), filter 0.4s;
 }
 
 .collection-item:hover .collection-bottle {
-  transform: translateY(-6px);
+  transform: scale(1.06);
 }
 
 .collection-color {
@@ -1086,6 +1127,15 @@ button {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
+}
+
+.format-bottle {
+  border-radius: var(--radius);
+}
+
+.format-bottle.is-small {
+  transform: scale(0.8);
+  transform-origin: bottom center;
 }
 
 .format {
@@ -1277,25 +1327,19 @@ button {
 .product-card-media {
   position: relative;
   aspect-ratio: 4 / 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 28px;
-  background: radial-gradient(60% 50% at 50% 60%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 75%);
+  overflow: hidden;
 }
 
 .product-card-bottle {
-  height: 100%;
-  width: auto;
-  transition: transform 0.5s;
+  transition: transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 .product-card:hover .product-card-bottle {
-  transform: translateY(-6px) scale(1.03);
+  transform: scale(1.05);
 }
 
 .product-card.is-upcoming .product-card-bottle {
-  opacity: 0.8;
+  filter: saturate(0.7) brightness(0.8);
 }
 
 .product-card-body {
@@ -1373,11 +1417,13 @@ button {
   background: radial-gradient(50% 45% at 50% 60%, color-mix(in srgb, var(--glow) 30%, transparent), transparent 75%);
 }
 
-.pdp-bottle {
+.pdp-media .pdp-bottle {
   position: relative;
-  height: 78%;
+  height: 100%;
   width: auto;
-  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.6));
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
 }
 
 .pdp-name {
@@ -1657,7 +1703,8 @@ button {
 
 .cart-line-media {
   display: block;
-  padding: 6px;
+  aspect-ratio: 540 / 840;
+  overflow: hidden;
   background: var(--surface-2);
   border-radius: var(--radius);
 }
@@ -2168,5 +2215,36 @@ button {
   .divider-right .divider-star {
     margin-left: 0;
     margin-right: 0;
+  }
+}
+
+/* ---------- Scent mist & reveal ---------- */
+
+.scent-mist {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s ease, transform 1s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-tile {
+    animation: none;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }

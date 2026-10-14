@@ -4,6 +4,7 @@ import { formatPrice, href } from "@/lib/format";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product } from "@/lib/products";
 import { Bottle } from "./Bottle";
+import { ProductName } from "./Wordmark";
 
 export function ProductCard({ product, locale, t }: { product: Product; locale: Locale; t: Dictionary }) {
   return (
@@ -20,7 +21,7 @@ export function ProductCard({ product, locale, t }: { product: Product; locale: 
         <p className="product-card-meta">
           {product.gender === "her" ? t.common.forHer : t.common.forHim} · {product.color[locale]}
         </p>
-        <h3>{product.named ? product.name[locale] : product.character[locale]}</h3>
+        <h3>{product.named ? <ProductName product={product} name={product.name[locale]} /> : product.character[locale]}</h3>
         <p className="product-card-character">{product.named ? product.character[locale] : t.product.nameSoon}</p>
         <p className="product-card-price">
           {product.available ? `${t.common.from} ${formatPrice(sizes[0].price, locale)}` : t.common.comingSoon}

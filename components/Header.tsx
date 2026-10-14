@@ -9,6 +9,7 @@ import { formatPrice, href } from "@/lib/format";
 import { useCart } from "./CartProvider";
 import { useI18n } from "./I18nProvider";
 import { LangSwitch } from "./LangSwitch";
+import { Logo } from "./Wordmark";
 
 export function Header() {
   const { locale, t } = useI18n();
@@ -60,7 +61,7 @@ export function Header() {
             ))}
           </nav>
           <Link href={href(locale)} className="wordmark" aria-label="CAPRAVA">
-            CAPRAVA
+            <Logo />
           </Link>
           <div className="header-actions">
             <nav className="nav-desktop" aria-label="Brand">

@@ -62,6 +62,8 @@ export type Product = {
   character: T;
   // Bottle colours: liquid, glass highlight and the accent used around the product.
   hex: { liquid: string; glow: string; accent: string };
+  // Brand wordmark for the fragrance name (public/brand), with its width/height ratio.
+  wordmark?: { src: string; ratio: number };
   tagline: T;
   description: T;
   notes: { top: NoteKey[]; middle: NoteKey[]; base: NoteKey[] };
@@ -78,7 +80,8 @@ export const products: Product[] = [
     available: true,
     color: { sq: "E zezë", en: "Black" },
     character: { sq: "Mister", en: "Mystery" },
-    hex: { liquid: "#151314", glow: "#4a4446", accent: "#b8a27a" },
+    hex: { liquid: "#151314", glow: "#8a8486", accent: "#b8a27a" },
+    wordmark: { src: "/brand/souverian.svg", ratio: 4112 / 684 },
     tagline: {
       sq: "Prezenca që nuk ka nevojë të flasë.",
       en: "A presence that never needs to speak.",
@@ -102,6 +105,7 @@ export const products: Product[] = [
     color: { sq: "Vjollcë", en: "Violet" },
     character: { sq: "Aristokraci", en: "Aristocracy" },
     hex: { liquid: "#5b2a86", glow: "#a77fd1", accent: "#c9a6e8" },
+    wordmark: { src: "/brand/tittara.svg", ratio: 2736 / 600 },
     tagline: {
       sq: "Elegancë që lind me ty.",
       en: "Elegance you were born with.",
@@ -213,6 +217,10 @@ export const products: Product[] = [
     notes: { top: [], middle: [], base: [] },
   },
 ];
+
+export function productImage(slug: string): string {
+  return `/products/${slug}.jpg`;
+}
 
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);

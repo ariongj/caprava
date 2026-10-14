@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Bottle } from "@/components/Bottle";
 import { EmailCapture } from "@/components/Forms";
 import { NotesPalette } from "@/components/Notes";
+import { ProductName } from "@/components/Wordmark";
 import { Divider, SectionTitle, SparkleIcon } from "@/components/Sparkle";
 import { sizes } from "@/lib/config";
 import { formatPrice, href } from "@/lib/format";
@@ -27,9 +28,13 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             <p>{t.home.quote}</p>
             <p className="hero-answer">{t.home.quoteAnswer}</p>
           </blockquote>
-          <div className="hero-bottles" aria-hidden="true">
-            <Bottle product={launch[1]} className="hero-bottle hero-bottle-back" />
-            <Bottle product={launch[0]} className="hero-bottle hero-bottle-front" />
+          <div className="hero-bottles">
+            <Link href={href(lang, `/shop/${launch[1].slug}`)} className="hero-tile hero-tile-back" style={{ "--glow": launch[1].hex.glow } as React.CSSProperties}>
+              <Bottle product={launch[1]} eager />
+            </Link>
+            <Link href={href(lang, `/shop/${launch[0].slug}`)} className="hero-tile hero-tile-front" style={{ "--glow": launch[0].hex.glow } as React.CSSProperties}>
+              <Bottle product={launch[0]} eager />
+            </Link>
           </div>
           <div className="hero-claim">
             <p className="hero-line1">{t.home.heroLine1}</p>
@@ -64,7 +69,9 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                 <p className="eyebrow">
                   {p.gender === "her" ? t.common.forHer : t.common.forHim} · {p.color[lang]}
                 </p>
-                <h3>{p.name[lang]}</h3>
+                <h3>
+                  <ProductName product={p} name={p.name[lang]} />
+                </h3>
                 <p className="launch-character">{p.character[lang]}</p>
                 <p className="muted">{p.tagline[lang]}</p>
                 <p className="launch-price">
@@ -104,7 +111,9 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <div className="collection-row">
                 {group.items.map((p) => (
                   <Link key={p.slug} href={href(lang, `/shop/${p.slug}`)} className="collection-item">
-                    <Bottle product={p} className="collection-bottle" />
+                    <span className="collection-media">
+                      <Bottle product={p} className="collection-bottle" />
+                    </span>
                     <span className="collection-color">{p.color[lang]}</span>
                     <span className="collection-character">{p.named ? p.name[lang] : p.character[lang]}</span>
                     {!p.available && <span className="badge badge-quiet">{t.common.comingSoon}</span>}

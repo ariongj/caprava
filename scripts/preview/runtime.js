@@ -63,6 +63,7 @@
     var rest = k.split("~").slice(1).join("~");
     if (special[rest]) main.innerHTML = special[rest]();
     else main.innerHTML = D.pages[k];
+    fillImages(main);
     closeMenu();
     renderLangSwitch();
     updateCount();
@@ -116,35 +117,15 @@
     if (h) h.classList.toggle("is-scrolled", window.scrollY > 24);
   }, { passive: true });
 
-  // ---------- bottle (same drawing as components/Bottle.tsx) ----------
-  function isLight(hex) {
-    var n = parseInt(hex.slice(1), 16);
-    return 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255) > 150;
-  }
+  // ---------- bottle photo (same as components/Bottle.tsx) ----------
   function bottle(p, ml) {
-    var id = "pb-" + p.slug + "-" + ml + "-" + Math.random().toString(36).slice(2, 6);
-    var liquid = p.hex.liquid, glow = p.hex.glow;
-    var ink = isLight(liquid) ? "#2b2620" : "#f4efe4";
-    var small = ml <= 15;
-    var b = small ? { x: 52, y: 150, w: 96, h: 150, r: 14 } : { x: 30, y: 92, w: 140, h: 210, r: 18 };
-    var c = small ? { x: 76, y: 92, w: 48, h: 44 } : { x: 66, y: 16, w: 68, h: 60 };
-    var collarY = c.y + c.h;
-    var label = p.named ? p.name.en.toUpperCase() : "";
-    var ly = b.y + b.h * 0.46;
-    return '<svg viewBox="0 0 200 330" role="img" aria-label="CAPRAVA ' + esc(p.name.en) + " " + ml + ' ML"><defs>' +
-      '<linearGradient id="' + id + '-g" x1="0" x2="1"><stop offset="0" stop-color="#6e5630"/><stop offset="0.35" stop-color="#e9d3a0"/><stop offset="0.55" stop-color="#b8995c"/><stop offset="1" stop-color="#5d4826"/></linearGradient>' +
-      '<linearGradient id="' + id + '-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + glow + '" stop-opacity="0.95"/><stop offset="0.45" stop-color="' + liquid + '"/><stop offset="1" stop-color="' + liquid + '" stop-opacity="0.9"/></linearGradient>' +
-      '<linearGradient id="' + id + '-s" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.28"/><stop offset="0.12" stop-color="#fff" stop-opacity="0.06"/><stop offset="0.85" stop-color="#fff" stop-opacity="0.02"/><stop offset="1" stop-color="#fff" stop-opacity="0.2"/></linearGradient>' +
-      '</defs>' +
-      '<rect x="' + c.x + '" y="' + c.y + '" width="' + c.w + '" height="' + c.h + '" rx="3" fill="url(#' + id + '-g)"/>' +
-      '<rect x="' + (100 - c.w * 0.3) + '" y="' + collarY + '" width="' + c.w * 0.6 + '" height="' + (b.y - collarY) + '" fill="#1c1a18"/>' +
-      '<rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="' + b.r + '" fill="#0b0a0a"/>' +
-      '<rect x="' + (b.x + 7) + '" y="' + (b.y + 7) + '" width="' + (b.w - 14) + '" height="' + (b.h - 14) + '" rx="' + (b.r - 6) + '" fill="url(#' + id + '-l)"/>' +
-      '<rect x="' + b.x + '" y="' + b.y + '" width="' + b.w + '" height="' + b.h + '" rx="' + b.r + '" fill="url(#' + id + '-s)" stroke="#fff" stroke-opacity="0.22"/>' +
-      '<g fill="' + ink + '" text-anchor="middle" font-family="var(--font-display), sans-serif">' +
-      '<text x="100" y="' + ly + '" font-size="' + (small ? 10 : 15) + '" font-weight="700" letter-spacing="' + (small ? 2.5 : 4) + '">CAPRAVA</text>' +
-      (label ? '<text x="100" y="' + (ly + (small ? 20 : 25)) + '" font-size="' + (small ? 6.5 : 8.5) + '" letter-spacing="2.5" opacity="0.85">' + esc(label) + "</text>" : "") +
-      "</g></svg>";
+    return '<img src="' + D.images[p.slug] + '" alt="CAPRAVA ' + esc(p.name.en) + " " + ml + ' ML" width="540" height="840" class="bottle-photo' + (ml <= 15 ? " is-small" : "") + '">';
+  }
+  function fillImages(root) {
+    root.querySelectorAll("img[data-img]").forEach(function (img) {
+      img.src = D.images[img.dataset.img];
+      img.removeAttribute("data-img");
+    });
   }
 
   // ---------- cart ----------

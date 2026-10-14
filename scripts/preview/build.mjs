@@ -36,6 +36,15 @@ const between = (html, start, end) => {
   return html.slice(i, j);
 };
 
+// Photos and wordmarks are embedded so the page needs no other files.
+const dataUri = (file, type) => `data:${type};base64,${fs.readFileSync(path.join(repo, "public", file)).toString("base64")}`;
+const images = Object.fromEntries(products.map((p) => [p.slug, dataUri(`products/${p.slug}.jpg`, "image/jpeg")]));
+const brand = ["caprava", "tittara", "souverian"];
+const localAssets = (html) =>
+  html
+    .replace(/src="\/products\/([a-z]+)\.jpg"/g, 'data-img="$1"')
+    .replace(/url\(\/brand\/([a-z]+)\.svg\)/g, "var(--wm-$1)");
+
 const pages = {};
 const chrome = {};
 for (const lang of locales) {
@@ -45,11 +54,11 @@ for (const lang of locales) {
     if (!res.ok) throw new Error(`${url} → ${res.status}`);
     const html = await res.text();
     const main = between(html, '<main id="main">', "</main>").slice('<main id="main">'.length);
-    pages[keyOf(`/${lang}${r}`)] = stripScripts(main);
+    pages[keyOf(`/${lang}${r}`)] = localAssets(stripScripts(main));
     if (r === "") {
       chrome[lang] = {
-        header: stripScripts(between(html, '<div class="announce">', '<main id="main">')),
-        footer: stripScripts(between(html, '<footer class="site-footer">', "</footer>") + "</footer>"),
+        header: localAssets(stripScripts(between(html, '<div class="announce">', '<main id="main">'))),
+        footer: localAssets(stripScripts(between(html, '<footer class="site-footer">', "</footer>") + "</footer>")),
       };
     }
   }
@@ -60,6 +69,7 @@ const data = {
   chrome,
   t: Object.fromEntries(locales.map((l) => [l, getDictionary(l)])),
   products: products.map(({ slug, name, named, gender, available, character, hex }) => ({ slug, name, named, gender, available, character, hex })),
+  images,
   sizes,
   shipping,
   maxQty: maxQtyPerLine,
@@ -77,7 +87,12 @@ const data = {
   },
 };
 
-const css = fs.readFileSync(path.join(repo, "app/globals.css"), "utf8");
+const css =
+  localAssets(fs.readFileSync(path.join(repo, "app/globals.css"), "utf8")) +
+  `\n:root { ${brand.map((b) => `--wm-${b}: url("${dataUri(`brand/${b}.svg`, "image/svg+xml")}");`).join(" ")} }\n`;
+const mistJs = ts
+  .transpileModule(fs.readFileSync(path.join(repo, "lib/mist.ts"), "utf8"), { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2020 } })
+  .outputText.replace(/^export /gm, "");
 const runtime = fs.readFileSync(path.join(here, "runtime.js"), "utf8");
 const json = JSON.stringify(data).replace(/</g, "\\u003c");
 
@@ -114,10 +129,17 @@ body { padding-bottom: 64px; }
   <div class="drawer-backdrop" data-act="close-drawer"></div>
   <aside class="drawer" role="dialog" aria-modal="true" id="drawer-panel"></aside>
 </div>
+<canvas class="scent-mist" id="scent-mist" aria-hidden="true"></canvas>
 <div class="preview-bar" id="preview-bar"></div>
 <script id="store-data" type="application/json">${json}</script>
 <script>
 ${runtime}
+</script>
+<script>
+(function () {
+${mistJs}
+startMist(document.getElementById("scent-mist"), mistColor);
+})();
 </script>
 </body>
 </html>

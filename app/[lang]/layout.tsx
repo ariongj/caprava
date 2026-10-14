@@ -6,6 +6,8 @@ import { CartProvider } from "@/components/CartProvider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { I18nProvider } from "@/components/I18nProvider";
+import { Reveal } from "@/components/Reveal";
+import { ScentMist } from "@/components/ScentMist";
 import { site } from "@/lib/config";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import "../globals.css";
@@ -50,6 +52,8 @@ export default async function LangLayout({ children, params }: { children: React
             <main id="main">{children}</main>
             <Footer locale={lang} t={t} />
             <CartDrawer />
+            <ScentMist />
+            <Reveal />
           </CartProvider>
         </I18nProvider>
       </body>
