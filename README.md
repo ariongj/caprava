@@ -31,6 +31,12 @@ npm run dev        # http://localhost:3000
 
 Any host that runs Node.js works as well (Netlify, Render, a VPS with `npm run build && npm start`).
 
+## Shareable preview
+
+`preview/index.html` is a single-file preview of the store that opens in any browser without a server (double-click it, or host it anywhere static). Shopping, the bag and checkout are clickable, but orders and forms are not sent — a bar at the bottom says so.
+
+Regenerate it after changing the site: run the store (`npm run build && npm start`), then `npm run preview` (or `node scripts/preview/build.mjs http://localhost:3000`).
+
 ## Configuration
 
 Copy `.env.example` to `.env.local` for local work. All values are optional except the site URL in production.
