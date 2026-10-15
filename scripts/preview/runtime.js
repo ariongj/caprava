@@ -126,6 +126,11 @@
     return '<img src="' + D.images[p.slug] + '" alt="CAPRAVA ' + esc(p.name.en) + " " + ml + ' ML" width="441" height="675" class="bottle-photo' + (ml <= 15 ? " is-small" : "") + '">';
   }
   function fillImages(root) {
+    // The page has no image files of its own, only the embedded ones.
+    root.querySelectorAll("img[srcset], img[sizes]").forEach(function (img) {
+      img.removeAttribute("srcset");
+      img.removeAttribute("sizes");
+    });
     root.querySelectorAll("img[data-img]").forEach(function (img) {
       img.src = D.images[img.dataset.img];
       img.removeAttribute("data-img");
