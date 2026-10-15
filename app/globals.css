@@ -2404,28 +2404,9 @@ a:hover .bottle::after {
   }
 }
 
-/* ---------- Static preview notice ---------- */
+/* ---------- Order note ---------- */
 
-.preview-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 70;
-  padding: 8px max(16px, env(safe-area-inset-right, 0px)) calc(8px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
-  background: var(--gold);
-  color: #0a0908;
-  text-align: center;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-}
-
-.preview-spacer {
-  height: 48px;
-}
-
-.preview-note {
+.order-note {
   padding: 16px 18px;
   border: 1px dashed var(--gold-deep);
   border-radius: var(--radius);
@@ -3247,11 +3228,6 @@ a:hover .bottle::after {
   font-family: var(--font-display);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-}
-
-.preview-bar ~ .buy-bar,
-body:has(.preview-bar) .buy-bar {
-  bottom: 34px;
 }
 
 /* Finder page */

@@ -270,10 +270,13 @@ const sq = {
   legal: {
     draft: "Draft — ky tekst duhet të rishikohet nga juristi përpara publikimit.",
   },
-  preview: {
-    bar: "Pamje paraprake · porositë dhe formularët nuk dërgohen nga kjo faqe",
-    order: "Kjo është një pamje paraprake e dyqanit. Porosia nuk u dërgua dhe asnjë e dhënë nuk u ruajt.",
-    form: "Pamje paraprake — mesazhi nuk u dërgua.",
+  byEmail: {
+    note: "Porosia dërgohet me email te {email}.",
+    order: "Email-i me porosinë tënde u hap. Dërgoje që ta pranojmë — do të të kontaktojmë për ta konfirmuar. Nëse nuk u hap, na shkruaj në {email}.",
+    form: "Email-i u hap — dërgoje dhe do të të përgjigjemi së shpejti.",
+    orderSubject: "Porosi e re CAPRAVA",
+    subscribe: "Dua të marr lajme nga CAPRAVA",
+    notify: "Më njoftoni kur të lansohet",
   },
 
   nav2: { search: "Kërko", wishlist: "Të preferuarat", finder: "Gjej aromën", faq: "Pyetje" },
@@ -658,10 +661,13 @@ const en: Dictionary = {
   legal: {
     draft: "Draft — this text must be reviewed by a lawyer before publication.",
   },
-  preview: {
-    bar: "Preview · orders and forms are not sent from this site",
-    order: "This is a preview of the store. The order was not sent and no details were stored.",
-    form: "Preview — this message was not sent.",
+  byEmail: {
+    note: "Your order is sent by email to {email}.",
+    order: "An email with your order has opened. Send it so we receive it — we will contact you to confirm. If it did not open, write to us at {email}.",
+    form: "Your email has opened — send it and we will reply shortly.",
+    orderSubject: "New CAPRAVA order",
+    subscribe: "I would like news from CAPRAVA",
+    notify: "Please let me know when it launches",
   },
 
   nav2: { search: "Search", wishlist: "Wishlist", finder: "Find your scent", faq: "FAQ" },

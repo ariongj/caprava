@@ -2,8 +2,7 @@
 // side of the screen, its atomiser is pressed twice and a fine perfume jet
 // opens into a drifting cloud across the page, then the bottle glides away
 // and the page keeps that fragrance's colour. Between bottles, light spritzes
-// drift in from the edges on scroll. Framework-free so the static preview can
-// reuse it.
+// drift in from the edges on scroll. Framework-free.
 
 export type Scent = { slug: string; color: string; image: string };
 

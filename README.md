@@ -34,7 +34,7 @@ Any host that runs Node.js works as well (Netlify, Render, a VPS with `npm run b
 
 ## GitHub Pages (static preview)
 
-`npm run export:static` builds the whole site as static files in `out/`, served under `/caprava` (pass another base path as an argument: `node scripts/export-static.mjs /my-path`). Everything works there (shop, search, wishlist, fragrance finder, bag, animations) except that orders and forms are not sent, since there is no server; a bar at the bottom says so. Publish by copying `out/` to the `gh-pages` branch.
+`npm run export:static` builds the whole site as static files in `out/`, served under `/caprava` (pass another base path as an argument: `node scripts/export-static.mjs /my-path`). Everything works there (shop, search, wishlist, fragrance finder, bag, animations). Because there is no server, placing an order or sending a form opens the customer's email app with everything filled in, addressed to the store email in `lib/config.ts` — make sure that address is real. Publish by copying `out/` to the `gh-pages` branch.
 
 ## Bottle cut-outs
 

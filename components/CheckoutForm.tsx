@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { isStaticExport } from "@/lib/asset";
-import { shipping, shippingCost } from "@/lib/config";
+import { priceFor, shipping, shippingCost, site } from "@/lib/config";
 import { fill } from "@/lib/i18n";
 import { formatPrice, href } from "@/lib/format";
+import { openEmail } from "@/lib/mailto";
+import { getProduct } from "@/lib/products";
 import { CartLines } from "./CartLines";
 import { useCart } from "./CartProvider";
 import { useI18n } from "./I18nProvider";
@@ -41,9 +43,27 @@ export function CheckoutForm({ cardEnabled }: { cardEnabled: boolean }) {
     setError("");
     const customer = Object.fromEntries(Array.from(new FormData(e.currentTarget).entries()).map(([k, v]) => [k, String(v)]));
     if (isStaticExport) {
-      // No server on the static preview: show the confirmation without sending anything.
+      // No server on the static site: the order goes to the store through the customer's email app.
+      const ship = shippingCost(country, subtotal) ?? 0;
+      const countryName = shipping.countries.find((c) => c.code === customer.country)?.name[locale] ?? customer.country;
+      openEmail(`${t.byEmail.orderSubject} — ${customer.firstName} ${customer.lastName}`, [
+        ...lines.map((l) => {
+          const p = getProduct(l.slug);
+          return `${l.qty} × ${p?.name[locale] ?? l.slug} ${l.ml} ML — ${formatPrice((priceFor(l.ml) ?? 0) * l.qty, locale)}`;
+        }),
+        `${t.cart.subtotal}: ${formatPrice(subtotal, locale)}`,
+        `${t.cart.shipping}: ${ship === 0 ? t.cart.free : formatPrice(ship, locale)}`,
+        `${t.cart.total}: ${formatPrice(subtotal + ship, locale)}`,
+        `${t.checkout.payment}: ${t.checkout.cod}`,
+        "",
+        `${t.checkout.firstName} ${t.checkout.lastName}: ${customer.firstName} ${customer.lastName}`,
+        `${t.checkout.email}: ${customer.email}`,
+        `${t.checkout.phone}: ${customer.phone}`,
+        `${t.checkout.address}: ${customer.address}, ${customer.postalCode ? `${customer.postalCode} ` : ""}${customer.city}, ${countryName}`,
+        ...(customer.note ? [`${t.checkout.note}: ${customer.note}`] : []),
+      ]);
       clear();
-      router.push(href(locale, "/checkout/success"));
+      setTimeout(() => router.push(href(locale, "/checkout/success")), 300);
       return;
     }
     try {
@@ -180,6 +200,7 @@ export function CheckoutForm({ cardEnabled }: { cardEnabled: boolean }) {
           <strong>{formatPrice(subtotal + ship, locale)}</strong>
         </div>
         <p className="muted small">{t.common.vatIncluded}</p>
+        {isStaticExport && <p className="muted small">{fill(t.byEmail.note, { email: site.email })}</p>}
         <button className="button button-full button-large" disabled={busy}>
           {busy ? t.checkout.processing : payment === "card" ? t.checkout.payNow : t.checkout.placeOrder}
         </button>

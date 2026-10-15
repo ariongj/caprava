@@ -6,7 +6,6 @@ import { CartProvider } from "@/components/CartProvider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { I18nProvider } from "@/components/I18nProvider";
-import { PreviewBar } from "@/components/PreviewBar";
 import { Reveal } from "@/components/Reveal";
 import { ScentMist } from "@/components/ScentMist";
 import { WishlistProvider } from "@/components/WishlistProvider";
@@ -56,7 +55,6 @@ export default async function LangLayout({ children, params }: { children: React
             <Footer locale={lang} t={t} />
             <CartDrawer />
             <ScentMist />
-            <PreviewBar t={t} />
             <Reveal />
             </WishlistProvider>
           </CartProvider>
