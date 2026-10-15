@@ -42,8 +42,8 @@ const images = Object.fromEntries(products.map((p) => [p.slug, dataUri(`products
 const brand = ["caprava", "tittara", "souverian"];
 const localAssets = (html) =>
   html
-    .replace(/ srcset="[^"]*"/g, "")
-    .replace(/ sizes="[^"]*"/g, "")
+    .replace(/ srcset="[^"]*"/gi, "")
+    .replace(/ sizes="[^"]*"/gi, "")
     .replace(/src="\/products\/cutout\/([a-z]+)\.webp"/g, 'data-img="$1"')
     .replace(/url\(\/products\/cutout\/([a-z]+)\.webp\)/g, "var(--cut-$1)")
     .replace(/url\(\/brand\/([a-z]+)\.svg\)/g, "var(--wm-$1)");
