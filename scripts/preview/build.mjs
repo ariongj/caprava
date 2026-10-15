@@ -129,7 +129,9 @@ body { padding-bottom: 64px; }
   <div class="drawer-backdrop" data-act="close-drawer"></div>
   <aside class="drawer" role="dialog" aria-modal="true" id="drawer-panel"></aside>
 </div>
+<div class="scent-tint" id="scent-tint" aria-hidden="true"></div>
 <canvas class="scent-mist" id="scent-mist" aria-hidden="true"></canvas>
+<div class="scent-stage" id="scent-stage" aria-hidden="true"></div>
 <div class="preview-bar" id="preview-bar"></div>
 <script id="store-data" type="application/json">${json}</script>
 <script>
@@ -138,7 +140,18 @@ ${runtime}
 <script>
 (function () {
 ${mistJs}
-startMist(document.getElementById("scent-mist"), mistColor);
+var data = JSON.parse(document.getElementById("store-data").textContent);
+var order = ${JSON.stringify(["souverian", "pasion", "tittara", "elegance", "freski", "ngrohtesi", "feminitet", "pasterti"])};
+startScentShow({
+  canvas: document.getElementById("scent-mist"),
+  stage: document.getElementById("scent-stage"),
+  tint: document.getElementById("scent-tint"),
+  scents: order.map(function (slug) {
+    var p = data.products.find(function (x) { return x.slug === slug; });
+    return { slug: slug, color: p.hex.glow, image: data.images[slug] };
+  }),
+  focus: focusedScent,
+});
 })();
 </script>
 </body>

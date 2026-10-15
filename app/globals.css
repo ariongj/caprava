@@ -2220,12 +2220,58 @@ button {
 
 /* ---------- Scent mist & reveal ---------- */
 
+@property --scent-tint {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #000000;
+}
+
+/* The page takes on the colour of the last fragrance sprayed. */
+.scent-tint {
+  --scent-tint: #000000;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 90% at 0% 45%, color-mix(in srgb, var(--scent-tint) 42%, transparent), transparent 70%),
+    radial-gradient(70% 90% at 100% 60%, color-mix(in srgb, var(--scent-tint) 34%, transparent), transparent 70%),
+    radial-gradient(90% 60% at 50% 110%, color-mix(in srgb, var(--scent-tint) 26%, transparent), transparent 70%),
+    color-mix(in srgb, var(--scent-tint) 12%, var(--bg));
+  transition: --scent-tint 2.4s ease;
+}
+
 .scent-mist {
   position: fixed;
   inset: 0;
   z-index: 30;
   pointer-events: none;
   mix-blend-mode: screen;
+}
+
+.scent-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 31;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.scent-cameo {
+  position: absolute;
+  aspect-ratio: 540 / 840;
+  opacity: 0;
+  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.7));
+  will-change: transform, opacity;
+}
+
+.scent-cameo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
 }
 
 .reveal {

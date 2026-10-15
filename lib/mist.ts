@@ -1,6 +1,10 @@
-// Perfume-mist effect: a spritz of fine droplets and soft vapour drifts in from
-// the side edges of the screen as the visitor scrolls. Framework-free so the
-// static preview can reuse it.
+// The CAPRAVA "scent show": as the visitor scrolls, a bottle glides in from a
+// side of the screen, sprays a cloud of perfume across the page and glides
+// back out, while the page background takes on that fragrance's colour.
+// Between appearances, small spritzes drift in from the edges on scroll.
+// Framework-free so the static preview can reuse it.
+
+export type Scent = { slug: string; color: string; image: string };
 
 type Particle = {
   x: number;
@@ -17,7 +21,7 @@ type Particle = {
   color: string;
 };
 
-const MAX_PARTICLES = 700;
+const MAX_PARTICLES = 1400;
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
@@ -37,8 +41,24 @@ function sprite(color: string): HTMLCanvasElement {
   return c;
 }
 
-export function startMist(canvas: HTMLCanvasElement, getColor: () => string): () => void {
-  if (typeof window === "undefined") return () => {};
+// Brighter version of a colour for the droplets, so dark scents still sparkle.
+function lighten(hex: string, amount: number): string {
+  const n = parseInt(hex.slice(1), 16);
+  const mix = (c: number) => Math.round(c + (255 - c) * amount);
+  const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255);
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
+}
+
+export function startScentShow(opts: {
+  canvas: HTMLCanvasElement;
+  stage: HTMLElement;
+  tint: HTMLElement;
+  scents: Scent[];
+  // Slug of the fragrance the current page is about, if any.
+  focus: () => string | null;
+}): () => void {
+  const { canvas, stage, tint, scents } = opts;
+  if (typeof window === "undefined" || scents.length === 0) return () => {};
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return () => {};
   const ctx = canvas.getContext("2d");
   if (!ctx) return () => {};
@@ -68,72 +88,144 @@ export function startMist(canvas: HTMLCanvasElement, getColor: () => string): ()
   resize();
 
   const particles: Particle[] = [];
-  let side: 1 | -1 = 1;
+  const small = () => w < 700;
 
-  // One spritz from a nozzle just outside the left or right edge.
-  const spritz = (fromLeft: boolean, strength: number) => {
-    const color = getColor();
-    const small = w < 700;
-    const x = fromLeft ? -8 : w + 8;
-    const y = rand(h * 0.25, h * 0.8);
-    const dir = fromLeft ? 1 : -1;
-    const scale = small ? 0.6 : 1;
-    const droplets = Math.round(38 * strength * scale);
-    const puffs = Math.round(11 * strength * scale);
+  // A burst of droplets and vapour from (x, y), aimed along dir (+1 right, -1 left).
+  const spray = (x: number, y: number, dir: number, strength: number, color: string, reach = 1) => {
+    const k = small() ? 0.65 : 1;
+    const drop = lighten(color, 0.45);
+    const droplets = Math.round(60 * strength * k);
+    const puffs = Math.round(16 * strength * k);
     for (let i = 0; i < droplets && particles.length < MAX_PARTICLES; i++) {
-      const angle = rand(-0.32, 0.22);
-      const speed = rand(7, 19) * (small ? 0.7 : 1);
+      const angle = rand(-0.3, 0.2);
+      const speed = rand(8, 24) * k * reach;
       particles.push({
-        x,
-        y: y + rand(-6, 6),
-        vx: Math.cos(angle) * speed * dir,
-        vy: Math.sin(angle) * speed,
-        r: rand(0.5, 1.7),
-        grow: 0,
-        a: rand(0.55, 0.95),
-        decay: rand(0.008, 0.02),
-        drag: 0.955,
-        lift: 0.012,
-        mist: false,
-        color,
+        x, y: y + rand(-5, 5),
+        vx: Math.cos(angle) * speed * dir, vy: Math.sin(angle) * speed,
+        r: rand(0.6, 2.2), grow: 0, a: rand(0.6, 1),
+        decay: rand(0.006, 0.016), drag: 0.955, lift: 0.014, mist: false, color: drop,
       });
     }
     for (let i = 0; i < puffs && particles.length < MAX_PARTICLES; i++) {
-      const angle = rand(-0.28, 0.16);
-      const speed = rand(2.5, 9) * (small ? 0.7 : 1);
+      const angle = rand(-0.26, 0.14);
+      const speed = rand(3, 13) * k * reach;
       particles.push({
-        x: x + dir * rand(0, 30),
-        y: y + rand(-14, 14),
-        vx: Math.cos(angle) * speed * dir,
-        vy: Math.sin(angle) * speed,
-        r: rand(14, 34) * scale,
-        grow: rand(0.6, 1.6) * scale,
-        a: rand(0.1, 0.2),
-        decay: rand(0.0016, 0.003),
-        drag: 0.988,
-        lift: -0.006,
-        mist: true,
-        color,
+        x: x + dir * rand(0, 40), y: y + rand(-16, 16),
+        vx: Math.cos(angle) * speed * dir, vy: Math.sin(angle) * speed,
+        r: rand(18, 44) * k, grow: rand(0.9, 2.2) * k, a: rand(0.12, 0.24),
+        decay: rand(0.0014, 0.0026), drag: 0.986, lift: -0.008, mist: true, color,
       });
     }
   };
 
-  let lastScroll = window.scrollY;
-  let energy = 0;
-  let lastSpritz = 0;
-  const onScroll = () => {
-    const y = window.scrollY;
-    energy += Math.abs(y - lastScroll);
-    lastScroll = y;
+  // ---- background colour ----
+  let currentColor = "#000000";
+  const setTint = (color: string) => {
+    currentColor = color;
+    tint.style.setProperty("--scent-tint", color);
   };
 
+  // ---- the bottle that comes in, sprays and leaves ----
+  let busy = false;
+  let fromLeft = true;
+  let nextIndex = 0;
+  const pick = (): Scent => {
+    const f = opts.focus();
+    const focused = f ? scents.find((s) => s.slug === f) : undefined;
+    if (focused) return focused;
+    const s = scents[nextIndex % scents.length];
+    nextIndex++;
+    return s;
+  };
+
+  const timers: number[] = [];
+  const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+
+  const cameo = () => {
+    if (busy) return;
+    busy = true;
+    const scent = pick();
+    const left = fromLeft;
+    fromLeft = !fromLeft;
+    const size = small() ? Math.min(120, w * 0.3) : Math.min(210, w * 0.15);
+    const top = rand(h * 0.22, h * 0.5);
+    const el = document.createElement("div");
+    el.className = "scent-cameo";
+    el.style.width = `${size}px`;
+    el.style.top = `${top}px`;
+    el.style[left ? "left" : "right"] = `${small() ? 4 : 24}px`;
+    const img = document.createElement("img");
+    img.src = scent.image;
+    img.alt = "";
+    el.appendChild(img);
+    stage.appendChild(el);
+
+    const dir = left ? 1 : -1;
+    const tilt = 14 * dir;
+    const out = `translateX(${left ? -140 : 140}%) rotate(${-tilt}deg)`;
+    const inPose = `translateX(0) rotate(${tilt}deg)`;
+    const press = `translateX(0) translateY(6px) rotate(${tilt}deg) scale(0.98)`;
+    el.animate(
+      [
+        { transform: out, opacity: 0, offset: 0 },
+        { transform: inPose, opacity: 1, offset: 0.24 },
+        { transform: press, opacity: 1, offset: 0.3 },
+        { transform: inPose, opacity: 1, offset: 0.36 },
+        { transform: press, opacity: 1, offset: 0.44 },
+        { transform: inPose, opacity: 1, offset: 0.62 },
+        { transform: out, opacity: 0, offset: 1 },
+      ],
+      { duration: 3200, easing: "cubic-bezier(0.45, 0, 0.2, 1)", fill: "forwards" },
+    );
+
+    const nozzle = () => {
+      const r = el.getBoundingClientRect();
+      // The atomiser sits at the top of the cap; the bottle leans toward the page.
+      return { x: r.left + r.width * (left ? 0.72 : 0.28), y: r.top + r.height * 0.2 };
+    };
+    // Two presses of the atomiser, each a big cloud of that scent.
+    later(() => {
+      const p = nozzle();
+      spray(p.x, p.y, dir, 2.4, scent.color, 1.25);
+      setTint(scent.color);
+    }, 3200 * 0.3);
+    later(() => {
+      const p = nozzle();
+      spray(p.x, p.y, dir, 1.8, scent.color, 1.1);
+    }, 3200 * 0.44);
+    later(() => {
+      el.remove();
+      busy = false;
+    }, 3300);
+  };
+
+  // ---- scroll ----
+  let lastScroll = window.scrollY;
+  let energy = 0;
+  let travel = 0;
+  let lastSpritz = 0;
+  let side = 1;
+  const onScroll = () => {
+    const y = window.scrollY;
+    const d = Math.abs(y - lastScroll);
+    lastScroll = y;
+    energy += d;
+    travel += d;
+    if (travel > h * 0.9 && !busy) {
+      travel = 0;
+      cameo();
+    }
+  };
+
+  // ---- animation loop ----
   let frame = 0;
   let running = true;
   const tick = (now: number) => {
     if (!running) return;
-    if (energy > 90 && now - lastSpritz > 260) {
-      spritz(side === 1, Math.min(1.6, 0.55 + energy / 500));
-      side = side === 1 ? -1 : 1;
+    if (energy > 80 && now - lastSpritz > 240) {
+      const x = side === 1 ? -8 : w + 8;
+      spray(x, rand(h * 0.2, h * 0.85), side, Math.min(1, 0.35 + energy / 900), currentColor === "#000000" ? "#e3cc98" : currentColor, 0.8);
+      side = -side;
       energy = 0;
       lastSpritz = now;
     }
@@ -147,9 +239,9 @@ export function startMist(canvas: HTMLCanvasElement, getColor: () => string): ()
       p.x += p.vx;
       p.y += p.vy;
       p.r += p.grow;
-      p.grow *= 0.995;
+      p.grow *= 0.993;
       p.a -= p.decay;
-      if (p.a <= 0 || p.x < -200 || p.x > w + 200) {
+      if (p.a <= 0 || p.x < -300 || p.x > w + 300) {
         particles.splice(i, 1);
         continue;
       }
@@ -182,26 +274,20 @@ export function startMist(canvas: HTMLCanvasElement, getColor: () => string): ()
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", onVisibility);
   frame = requestAnimationFrame(tick);
-
-  // A welcome spritz from both sides.
-  const intro = [
-    window.setTimeout(() => spritz(true, 1.1), 500),
-    window.setTimeout(() => spritz(false, 1.1), 850),
-  ];
+  later(cameo, 1200);
 
   return () => {
     running = false;
     cancelAnimationFrame(frame);
-    intro.forEach(clearTimeout);
+    timers.forEach(clearTimeout);
+    stage.replaceChildren();
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", resize);
     document.removeEventListener("visibilitychange", onVisibility);
   };
 }
 
-// Colour of the mist on the current page: a product page sets data-mist.
-export function mistColor(): string {
-  const el = document.querySelector<HTMLElement>("[data-mist]");
-  const c = el?.dataset.mist;
-  return c && /^#[0-9a-f]{6}$/i.test(c) ? c : "#e3cc98";
+// Slug of the fragrance a product page is about (set with data-mist-slug).
+export function focusedScent(): string | null {
+  return document.querySelector<HTMLElement>("[data-mist-slug]")?.dataset.mistSlug ?? null;
 }

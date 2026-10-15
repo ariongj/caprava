@@ -56,7 +56,7 @@ export default async function ProductPage({ params }: { params: Promise<{ lang: 
     : null;
 
   return (
-    <div className="container page" data-mist={product.hex.glow} style={{ "--accent": product.hex.accent, "--glow": product.hex.glow } as React.CSSProperties}>
+    <div className="container page" data-mist-slug={product.slug} style={{ "--accent": product.hex.accent, "--glow": product.hex.glow } as React.CSSProperties}>
       {jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Link href={href(lang, "/shop")}>{t.nav.shop}</Link>
