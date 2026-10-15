@@ -1,0 +1,9 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /sq/checkout
+Disallow: /en/checkout
+Disallow: /sq/cart
+Disallow: /en/cart
+
+Sitemap: http://localhost:3000/sitemap.xml

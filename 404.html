@@ -1,0 +1,10 @@
+<!doctype html><html><head><meta charset="utf-8"><title>CAPRAVA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  var saved = (document.cookie.match(/(?:^|; )lang=(sq|en)/) || [])[1];
+  var nav = (navigator.language || "").toLowerCase();
+  var lang = saved || (nav.indexOf("en") === 0 ? "en" : "sq");
+  location.replace("/caprava/" + lang + "/" + location.hash);
+</script>
+<noscript><meta http-equiv="refresh" content="0; url=/caprava/sq/"></noscript>
+</head><body style="background:#050505"></body></html>
