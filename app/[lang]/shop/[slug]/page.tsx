@@ -69,7 +69,7 @@ export default async function ProductPage({ params }: { params: Promise<{ lang: 
       <div className="pdp">
         <div className="pdp-media">
           <div className="pdp-glow" aria-hidden="true" />
-          <Bottle product={product} className="pdp-bottle" eager />
+          <Bottle product={product} className="pdp-bottle shine-auto" eager sizes="(max-width: 860px) 80vw, 40vw" />
         </div>
         <div className="pdp-info">
           <p className="eyebrow">

@@ -30,10 +30,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           </blockquote>
           <div className="hero-bottles">
             <Link href={href(lang, `/shop/${launch[1].slug}`)} className="hero-tile hero-tile-back bottle-glow reflect" style={{ "--glow": launch[1].hex.glow } as React.CSSProperties}>
-              <Bottle product={launch[1]} eager />
+              <Bottle product={launch[1]} eager className="shine-auto" sizes="(max-width: 860px) 45vw, 20vw" />
             </Link>
             <Link href={href(lang, `/shop/${launch[0].slug}`)} className="hero-tile hero-tile-front bottle-glow reflect" style={{ "--glow": launch[0].hex.glow } as React.CSSProperties}>
-              <Bottle product={launch[0]} eager />
+              <Bottle product={launch[0]} eager className="shine-auto shine-late" sizes="(max-width: 860px) 50vw, 24vw" />
             </Link>
           </div>
           <div className="hero-claim">

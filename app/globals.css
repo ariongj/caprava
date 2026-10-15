@@ -108,6 +108,18 @@ button {
   text-align: center;
 }
 
+/* Fine film grain over the whole page. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 29;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 .skip-link {
   position: absolute;
   left: -9999px;
@@ -317,9 +329,70 @@ button {
   filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.65));
 }
 
-.bottle-photo.is-small {
+.bottle {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bottle.is-small {
   transform: scale(0.78);
   transform-origin: center bottom;
+}
+
+/* A streak of light across the glass, clipped to the bottle's silhouette. */
+.bottle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.05) 44%, rgba(255, 255, 255, 0.42) 50%, rgba(255, 255, 255, 0.05) 56%, transparent 62%);
+  background-size: 300% 100%;
+  background-position: 120% 0;
+  -webkit-mask: var(--cut) center bottom / contain no-repeat;
+  mask: var(--cut) center bottom / contain no-repeat;
+  mix-blend-mode: screen;
+  opacity: 0;
+}
+
+a:hover .bottle::after {
+  animation: shine-once 1.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.bottle.shine-auto::after {
+  animation: shine 7s cubic-bezier(0.4, 0, 0.2, 1) 1.2s infinite;
+}
+
+.bottle.shine-late::after {
+  animation-delay: 4.5s;
+}
+
+@keyframes shine-once {
+  from {
+    background-position: 120% 0;
+    opacity: 1;
+  }
+  to {
+    background-position: -20% 0;
+    opacity: 1;
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 120% 0;
+    opacity: 1;
+  }
+  25% {
+    background-position: -20% 0;
+    opacity: 1;
+  }
+  26%,
+  100% {
+    background-position: -20% 0;
+    opacity: 0;
+  }
 }
 
 .reflect .bottle-photo {
@@ -2320,7 +2393,9 @@ button {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-tile {
+  .hero-tile,
+  .bottle::after,
+  a:hover .bottle::after {
     animation: none;
   }
   .reveal {

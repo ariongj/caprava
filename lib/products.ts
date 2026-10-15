@@ -223,8 +223,8 @@ export function productImage(slug: string): string {
   return `/products/${slug}.jpg`;
 }
 
-export function productCutout(slug: string): string {
-  return `/products/cutout/${slug}.webp`;
+export function productCutout(slug: string, width?: 360): string {
+  return `/products/cutout/${slug}${width ? `-${width}` : ""}.webp`;
 }
 
 export function getProduct(slug: string): Product | undefined {

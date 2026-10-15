@@ -1,6 +1,10 @@
 (function () {
   "use strict";
   var D = JSON.parse(document.getElementById("store-data").textContent);
+  // Each bottle image doubles as the mask for its light sweep.
+  Object.keys(D.images).forEach(function (slug) {
+    document.documentElement.style.setProperty("--cut-" + slug, 'url("' + D.images[slug] + '")');
+  });
   var STORE_KEY = "caprava-cart";
   var lang = null;
   var key = null;
