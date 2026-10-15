@@ -46,6 +46,8 @@ python scripts/cutouts/1-masks.py public/products /tmp/masks
 python scripts/cutouts/2-silhouette.py public/products /tmp/masks public/products/cutout
 ```
 
+The cut-outs on the site are 4× AI-upscaled (Real-ESRGAN x4plus, run with `scripts/cutouts/upscale.py`, numpy only) from the original screenshot and then masked with `scripts/cutouts/3-apply-upscaled.py`. Replacing them with the original high-resolution photos or renders will look better still.
+
 ## Configuration
 
 Copy `.env.example` to `.env.local` for local work. All values are optional except the site URL in production.
