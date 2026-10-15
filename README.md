@@ -37,6 +37,15 @@ Any host that runs Node.js works as well (Netlify, Render, a VPS with `npm run b
 
 Regenerate it after changing the site: run the store (`npm run build && npm start`), then `npm run preview` (or `node scripts/preview/build.mjs http://localhost:3000`).
 
+## Bottle cut-outs
+
+`public/products/cutout/*.webp` are the bottle photos with their studio backdrop removed; the site uses them everywhere and for the spraying-bottle animation. To redo them from new photos (`public/products/<slug>.jpg`), with `numpy`, `pillow` and `scipy` installed:
+
+```bash
+python scripts/cutouts/1-masks.py public/products /tmp/masks
+python scripts/cutouts/2-silhouette.py public/products /tmp/masks public/products/cutout
+```
+
 ## Configuration
 
 Copy `.env.example` to `.env.local` for local work. All values are optional except the site URL in production.

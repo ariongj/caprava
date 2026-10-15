@@ -1,10 +1,16 @@
 // The CAPRAVA "scent show": as the visitor scrolls, a bottle glides in from a
-// side of the screen, sprays a cloud of perfume across the page and glides
-// back out, while the page background takes on that fragrance's colour.
-// Between appearances, small spritzes drift in from the edges on scroll.
-// Framework-free so the static preview can reuse it.
+// side of the screen, its atomiser is pressed twice and a fine perfume jet
+// opens into a drifting cloud across the page, then the bottle glides away
+// and the page keeps that fragrance's colour. Between bottles, light spritzes
+// drift in from the edges on scroll. Framework-free so the static preview can
+// reuse it.
 
 export type Scent = { slug: string; color: string; image: string };
+
+// Geometry of the cut-out bottle images (public/products/cutout), as fractions
+// of the image: the cap ends at capBottom, the atomiser's orifice sits near the
+// top of the cap on either side.
+const BOTTLE = { ratio: 441 / 675, capBottom: 0.28, orificeY: 0.075, orificeX: 0.29 };
 
 type Particle = {
   x: number;
@@ -14,39 +20,45 @@ type Particle = {
   r: number;
   grow: number;
   a: number;
-  decay: number;
+  fade: number;
   drag: number;
-  lift: number;
-  mist: boolean;
+  fall: number;
+  swirl: number;
+  phase: number;
+  vapour: boolean;
   color: string;
 };
 
-const MAX_PARTICLES = 1400;
+const MAX_PARTICLES = 2600;
 
 function rand(min: number, max: number) {
   return min + Math.random() * (max - min);
 }
 
-function sprite(color: string): HTMLCanvasElement {
+// Approximately normal, for a jet that is dense in the middle.
+function gauss() {
+  return (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+}
+
+function mixWhite(hex: string, amount: number): string {
+  const n = parseInt(hex.slice(1), 16);
+  const mix = (c: number) => Math.round(c + (255 - c) * amount);
+  const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255);
+  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
+}
+
+function vapourSprite(color: string): HTMLCanvasElement {
   const size = 128;
   const c = document.createElement("canvas");
   c.width = c.height = size;
   const g = c.getContext("2d")!;
   const grad = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-  grad.addColorStop(0, color);
-  grad.addColorStop(0.35, color + "99");
+  grad.addColorStop(0, color + "cc");
+  grad.addColorStop(0.4, color + "55");
   grad.addColorStop(1, color + "00");
   g.fillStyle = grad;
   g.fillRect(0, 0, size, size);
   return c;
-}
-
-// Brighter version of a colour for the droplets, so dark scents still sparkle.
-function lighten(hex: string, amount: number): string {
-  const n = parseInt(hex.slice(1), 16);
-  const mix = (c: number) => Math.round(c + (255 - c) * amount);
-  const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255);
-  return `#${((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1)}`;
 }
 
 export function startScentShow(opts: {
@@ -67,7 +79,7 @@ export function startScentShow(opts: {
   const spriteFor = (color: string) => {
     let s = sprites.get(color);
     if (!s) {
-      s = sprite(color);
+      s = vapourSprite(color);
       sprites.set(color, s);
     }
     return s;
@@ -86,40 +98,58 @@ export function startScentShow(opts: {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   resize();
-
-  const particles: Particle[] = [];
   const small = () => w < 700;
 
-  // A burst of droplets and vapour from (x, y), aimed along dir (+1 right, -1 left).
-  const spray = (x: number, y: number, dir: number, strength: number, color: string, reach = 1) => {
-    const k = small() ? 0.65 : 1;
-    const drop = lighten(color, 0.45);
-    const droplets = Math.round(60 * strength * k);
-    const puffs = Math.round(16 * strength * k);
-    for (let i = 0; i < droplets && particles.length < MAX_PARTICLES; i++) {
-      const angle = rand(-0.3, 0.2);
-      const speed = rand(8, 24) * k * reach;
+  const particles: Particle[] = [];
+
+  // One instant of an aerosol jet: fast droplets in a narrow cone that brake
+  // hard in the air, plus vapour that swells as it slows and drifts.
+  const emitJet = (x: number, y: number, angle: number, power: number, color: string) => {
+    const k = small() ? 0.6 : 1;
+    const droplet = mixWhite(color, 0.65);
+    const vapour = mixWhite(color, 0.3);
+    const drops = Math.round(26 * power);
+    for (let i = 0; i < drops && particles.length < MAX_PARTICLES; i++) {
+      const a = angle + gauss() * 0.11;
+      const speed = rand(16, 34) * k * power;
       particles.push({
-        x, y: y + rand(-5, 5),
-        vx: Math.cos(angle) * speed * dir, vy: Math.sin(angle) * speed,
-        r: rand(0.6, 2.2), grow: 0, a: rand(0.6, 1),
-        decay: rand(0.006, 0.016), drag: 0.955, lift: 0.014, mist: false, color: drop,
+        x, y,
+        vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+        r: rand(0.35, 1.25), grow: 0, a: rand(0.35, 0.85), fade: rand(0.004, 0.011),
+        drag: rand(0.88, 0.93), fall: rand(0.004, 0.02), swirl: rand(0.02, 0.08), phase: rand(0, 6.3),
+        vapour: false, color: droplet,
       });
     }
+    const puffs = Math.round(5 * power);
     for (let i = 0; i < puffs && particles.length < MAX_PARTICLES; i++) {
-      const angle = rand(-0.26, 0.14);
-      const speed = rand(3, 13) * k * reach;
+      const a = angle + gauss() * 0.16;
+      const speed = rand(9, 24) * k * power;
       particles.push({
-        x: x + dir * rand(0, 40), y: y + rand(-16, 16),
-        vx: Math.cos(angle) * speed * dir, vy: Math.sin(angle) * speed,
-        r: rand(18, 44) * k, grow: rand(0.9, 2.2) * k, a: rand(0.12, 0.24),
-        decay: rand(0.0014, 0.0026), drag: 0.986, lift: -0.008, mist: true, color,
+        x, y,
+        vx: Math.cos(a) * speed, vy: Math.sin(a) * speed,
+        r: rand(3, 8) * k, grow: rand(1.1, 2.2) * k, a: rand(0.08, 0.16), fade: rand(0.0009, 0.0018),
+        drag: rand(0.9, 0.94), fall: -rand(0.002, 0.008), swirl: rand(0.08, 0.2), phase: rand(0, 6.3),
+        vapour: true, color: vapour,
       });
     }
   };
 
+  // A press of the atomiser is a short "pfft" of jets over ~0.3 s.
+  const jets: { x: () => { x: number; y: number }; angle: number; until: number; power: number; color: string }[] = [];
+  const press = (origin: () => { x: number; y: number }, angle: number, power: number, color: string, now: number) => {
+    jets.push({ x: origin, angle, until: now + 300, power, color });
+  };
+
+  // Light spritz from just outside a screen edge, used while scrolling.
+  const edgeSpritz = (fromLeft: boolean, color: string) => {
+    const y = rand(h * 0.2, h * 0.85);
+    const x = fromLeft ? -6 : w + 6;
+    const angle = fromLeft ? rand(-0.15, 0.05) : Math.PI + rand(-0.05, 0.15);
+    for (let i = 0; i < 6; i++) emitJet(x, y + rand(-4, 4), angle, 0.55, color);
+  };
+
   // ---- background colour ----
-  let currentColor = "#000000";
+  let currentColor = "";
   const setTint = (color: string) => {
     currentColor = color;
     tint.style.setProperty("--scent-tint", color);
@@ -133,13 +163,19 @@ export function startScentShow(opts: {
     const f = opts.focus();
     const focused = f ? scents.find((s) => s.slug === f) : undefined;
     if (focused) return focused;
-    const s = scents[nextIndex % scents.length];
-    nextIndex++;
-    return s;
+    return scents[nextIndex++ % scents.length];
   };
 
   const timers: number[] = [];
   const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
+
+  const layer = (src: string, part: "cap" | "body") => {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = "";
+    img.className = `scent-cameo-${part}`;
+    return img;
+  };
 
   const cameo = () => {
     if (busy) return;
@@ -147,56 +183,73 @@ export function startScentShow(opts: {
     const scent = pick();
     const left = fromLeft;
     fromLeft = !fromLeft;
-    const size = small() ? Math.min(120, w * 0.3) : Math.min(210, w * 0.15);
-    const top = rand(h * 0.22, h * 0.5);
+    const width = small() ? Math.min(104, w * 0.27) : Math.min(190, w * 0.14);
+    const height = width / BOTTLE.ratio;
+    const top = rand(h * 0.22, Math.max(h * 0.24, h * 0.62 - height));
+    const dir = left ? 1 : -1;
+    const tilt = 5 * dir;
+
     const el = document.createElement("div");
     el.className = "scent-cameo";
-    el.style.width = `${size}px`;
+    el.style.width = `${width}px`;
     el.style.top = `${top}px`;
-    el.style[left ? "left" : "right"] = `${small() ? 4 : 24}px`;
-    const img = document.createElement("img");
-    img.src = scent.image;
-    img.alt = "";
-    el.appendChild(img);
+    el.style.setProperty("--glow", scent.color);
+    el.style[left ? "left" : "right"] = `${small() ? 6 : Math.max(24, w * 0.04)}px`;
+    const glow = document.createElement("span");
+    glow.className = "scent-cameo-glow";
+    const body = layer(scent.image, "body");
+    const cap = layer(scent.image, "cap");
+    el.append(glow, body, cap);
     stage.appendChild(el);
 
-    const dir = left ? 1 : -1;
-    const tilt = 14 * dir;
-    const out = `translateX(${left ? -140 : 140}%) rotate(${-tilt}deg)`;
-    const inPose = `translateX(0) rotate(${tilt}deg)`;
-    const press = `translateX(0) translateY(6px) rotate(${tilt}deg) scale(0.98)`;
+    const off = `translate(${left ? -170 : 170}%, 30px) rotate(${-tilt * 3}deg)`;
     el.animate(
       [
-        { transform: out, opacity: 0, offset: 0 },
-        { transform: inPose, opacity: 1, offset: 0.24 },
-        { transform: press, opacity: 1, offset: 0.3 },
-        { transform: inPose, opacity: 1, offset: 0.36 },
-        { transform: press, opacity: 1, offset: 0.44 },
-        { transform: inPose, opacity: 1, offset: 0.62 },
-        { transform: out, opacity: 0, offset: 1 },
+        { transform: off, opacity: 0 },
+        { transform: `translate(${4 * dir}%, -6px) rotate(${tilt * 1.6}deg)`, opacity: 1, offset: 0.2 },
+        { transform: `translate(0, 0) rotate(${tilt}deg)`, opacity: 1, offset: 0.27 },
+        { transform: `translate(0, -4px) rotate(${tilt}deg)`, opacity: 1, offset: 0.55 },
+        { transform: `translate(0, 0) rotate(${tilt}deg)`, opacity: 1, offset: 0.74 },
+        { transform: off, opacity: 0 },
       ],
-      { duration: 3200, easing: "cubic-bezier(0.45, 0, 0.2, 1)", fill: "forwards" },
+      { duration: 3600, easing: "cubic-bezier(0.45, 0, 0.2, 1)", fill: "forwards" },
     );
 
-    const nozzle = () => {
+    // Where the spray leaves the atomiser, following the bottle as it moves.
+    const orifice = () => {
       const r = el.getBoundingClientRect();
-      // The atomiser sits at the top of the cap; the bottle leans toward the page.
-      return { x: r.left + r.width * (left ? 0.72 : 0.28), y: r.top + r.height * 0.2 };
+      return { x: r.left + r.width * (left ? 1 - BOTTLE.orificeX : BOTTLE.orificeX), y: r.top + r.height * (BOTTLE.orificeY + 0.03) };
     };
-    // Two presses of the atomiser, each a big cloud of that scent.
-    later(() => {
-      const p = nozzle();
-      spray(p.x, p.y, dir, 2.4, scent.color, 1.25);
-      setTint(scent.color);
-    }, 3200 * 0.3);
-    later(() => {
-      const p = nozzle();
-      spray(p.x, p.y, dir, 1.8, scent.color, 1.1);
-    }, 3200 * 0.44);
+    // Aim slightly upward, the way an atomiser is held.
+    const angle = left ? -0.08 : Math.PI + 0.08;
+
+    const pump = (at: number, power: number, first: boolean) => {
+      later(() => {
+        cap.animate(
+          [
+            { transform: "translateY(0)" },
+            { transform: `translateY(${height * 0.035}px)`, offset: 0.35 },
+            { transform: `translateY(${height * 0.035}px)`, offset: 0.6 },
+            { transform: "translateY(0)" },
+          ],
+          { duration: 420, easing: "cubic-bezier(0.3, 0, 0.2, 1)" },
+        );
+        body.animate(
+          [{ transform: "translateY(0)" }, { transform: `translateY(${height * 0.008}px)`, offset: 0.4 }, { transform: "translateY(0)" }],
+          { duration: 420 },
+        );
+        later(() => {
+          press(orifice, angle, power, scent.color, performance.now());
+          if (first) setTint(scent.color);
+        }, 110);
+      }, at);
+    };
+    pump(1050, 1.25, true);
+    pump(1750, 1.05, false);
     later(() => {
       el.remove();
       busy = false;
-    }, 3300);
+    }, 3700);
   };
 
   // ---- scroll ----
@@ -204,14 +257,14 @@ export function startScentShow(opts: {
   let energy = 0;
   let travel = 0;
   let lastSpritz = 0;
-  let side = 1;
+  let side = true;
   const onScroll = () => {
     const y = window.scrollY;
     const d = Math.abs(y - lastScroll);
     lastScroll = y;
     energy += d;
     travel += d;
-    if (travel > h * 0.9 && !busy) {
+    if (travel > h * 0.85 && !busy) {
       travel = 0;
       cameo();
     }
@@ -220,40 +273,54 @@ export function startScentShow(opts: {
   // ---- animation loop ----
   let frame = 0;
   let running = true;
+  let last = performance.now();
   const tick = (now: number) => {
     if (!running) return;
-    if (energy > 80 && now - lastSpritz > 240) {
-      const x = side === 1 ? -8 : w + 8;
-      spray(x, rand(h * 0.2, h * 0.85), side, Math.min(1, 0.35 + energy / 900), currentColor === "#000000" ? "#e3cc98" : currentColor, 0.8);
-      side = -side;
+    const dt = Math.min(3, (now - last) / 16.67);
+    last = now;
+
+    for (let i = jets.length - 1; i >= 0; i--) {
+      const j = jets[i];
+      if (now > j.until) {
+        jets.splice(i, 1);
+        continue;
+      }
+      const o = j.x();
+      emitJet(o.x, o.y, j.angle, j.power * dt, j.color);
+    }
+    if (energy > 90 && now - lastSpritz > 280 && !busy) {
+      edgeSpritz(side, currentColor || "#e3cc98");
+      side = !side;
       energy = 0;
       lastSpritz = now;
     }
     energy *= 0.96;
 
     ctx.clearRect(0, 0, w, h);
+    const t = now / 1000;
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
-      p.vx *= p.drag;
-      p.vy = p.vy * p.drag + p.lift;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.r += p.grow;
-      p.grow *= 0.993;
-      p.a -= p.decay;
-      if (p.a <= 0 || p.x < -300 || p.x > w + 300) {
+      const drag = Math.pow(p.drag, dt);
+      p.vx = p.vx * drag + Math.sin(t * 1.7 + p.phase) * p.swirl * dt;
+      p.vy = p.vy * drag + (p.fall + Math.cos(t * 1.3 + p.phase) * p.swirl * 0.6) * dt;
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      if (p.vapour) {
+        // Vapour swells most while it is still moving fast.
+        p.r += (p.grow * 0.25 + Math.hypot(p.vx, p.vy) * 0.18) * dt;
+      }
+      p.a -= p.fade * dt;
+      if (p.a <= 0 || p.x < -400 || p.x > w + 400 || p.y < -400 || p.y > h + 400) {
         particles.splice(i, 1);
         continue;
       }
       ctx.globalAlpha = p.a;
-      if (p.mist) {
+      if (p.vapour) {
         const d = p.r * 2;
         ctx.drawImage(spriteFor(p.color), p.x - p.r, p.y - p.r, d, d);
       } else {
         ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
       }
     }
     ctx.globalAlpha = 1;
@@ -266,6 +333,7 @@ export function startScentShow(opts: {
       cancelAnimationFrame(frame);
     } else if (!running) {
       running = true;
+      last = performance.now();
       frame = requestAnimationFrame(tick);
     }
   };
@@ -274,7 +342,7 @@ export function startScentShow(opts: {
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", onVisibility);
   frame = requestAnimationFrame(tick);
-  later(cameo, 1200);
+  later(cameo, 1000);
 
   return () => {
     running = false;

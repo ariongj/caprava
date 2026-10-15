@@ -29,10 +29,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             <p className="hero-answer">{t.home.quoteAnswer}</p>
           </blockquote>
           <div className="hero-bottles">
-            <Link href={href(lang, `/shop/${launch[1].slug}`)} className="hero-tile hero-tile-back" style={{ "--glow": launch[1].hex.glow } as React.CSSProperties}>
+            <Link href={href(lang, `/shop/${launch[1].slug}`)} className="hero-tile hero-tile-back bottle-glow reflect" style={{ "--glow": launch[1].hex.glow } as React.CSSProperties}>
               <Bottle product={launch[1]} eager />
             </Link>
-            <Link href={href(lang, `/shop/${launch[0].slug}`)} className="hero-tile hero-tile-front" style={{ "--glow": launch[0].hex.glow } as React.CSSProperties}>
+            <Link href={href(lang, `/shop/${launch[0].slug}`)} className="hero-tile hero-tile-front bottle-glow reflect" style={{ "--glow": launch[0].hex.glow } as React.CSSProperties}>
               <Bottle product={launch[0]} eager />
             </Link>
           </div>
@@ -62,7 +62,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               className="launch-card"
               style={{ "--accent": p.hex.accent, "--glow": p.hex.glow } as React.CSSProperties}
             >
-              <div className="launch-media">
+              <div className="launch-media bottle-glow reflect">
                 <Bottle product={p} className="launch-bottle" />
               </div>
               <div className="launch-body">
@@ -110,8 +110,8 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <p className="collection-label">{group.label}</p>
               <div className="collection-row">
                 {group.items.map((p) => (
-                  <Link key={p.slug} href={href(lang, `/shop/${p.slug}`)} className="collection-item">
-                    <span className="collection-media">
+                  <Link key={p.slug} href={href(lang, `/shop/${p.slug}`)} className="collection-item" style={{ "--glow": p.hex.glow } as React.CSSProperties}>
+                    <span className="collection-media bottle-glow">
                       <Bottle product={p} className="collection-bottle" />
                     </span>
                     <span className="collection-color">{p.color[lang]}</span>

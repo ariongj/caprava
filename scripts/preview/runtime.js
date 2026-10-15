@@ -119,7 +119,7 @@
 
   // ---------- bottle photo (same as components/Bottle.tsx) ----------
   function bottle(p, ml) {
-    return '<img src="' + D.images[p.slug] + '" alt="CAPRAVA ' + esc(p.name.en) + " " + ml + ' ML" width="540" height="840" class="bottle-photo' + (ml <= 15 ? " is-small" : "") + '">';
+    return '<img src="' + D.images[p.slug] + '" alt="CAPRAVA ' + esc(p.name.en) + " " + ml + ' ML" width="441" height="675" class="bottle-photo' + (ml <= 15 ? " is-small" : "") + '">';
   }
   function fillImages(root) {
     root.querySelectorAll("img[data-img]").forEach(function (img) {

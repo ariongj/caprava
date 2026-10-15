@@ -13,7 +13,7 @@ export function ProductCard({ product, locale, t }: { product: Product; locale: 
       className={`product-card${product.available ? "" : " is-upcoming"}`}
       style={{ "--accent": product.hex.accent } as React.CSSProperties}
     >
-      <div className="product-card-media">
+      <div className="product-card-media bottle-glow">
         <Bottle product={product} className="product-card-bottle" />
         {!product.available && <span className="badge">{t.common.comingSoon}</span>}
       </div>

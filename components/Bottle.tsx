@@ -1,6 +1,6 @@
-import { productImage, type Product } from "@/lib/products";
+import { productCutout, type Product } from "@/lib/products";
 
-// Product photo of the bottle. The 15 ML flacon is shown slightly smaller.
+// The cut-out bottle, without its studio backdrop. The 15 ML flacon is shown smaller.
 export function Bottle({
   product,
   ml = 75,
@@ -15,10 +15,10 @@ export function Bottle({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={productImage(product.slug)}
+      src={productCutout(product.slug)}
       alt={`CAPRAVA ${product.name.en} ${ml} ML`}
-      width={540}
-      height={840}
+      width={441}
+      height={675}
       loading={eager ? "eager" : "lazy"}
       decoding="async"
       className={`bottle-photo${ml <= 15 ? " is-small" : ""}${className ? ` ${className}` : ""}`}

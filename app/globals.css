@@ -25,6 +25,7 @@
 }
 
 html {
+  overflow-x: clip;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
 }
@@ -305,11 +306,40 @@ button {
   mask: var(--wordmark) left center / contain no-repeat;
 }
 
+/* Cut-out bottles float on the page: a soft shadow under the glass and,
+   where the frame allows, a faint reflection on the "floor". */
 .bottle-photo {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 22px 26px rgba(0, 0, 0, 0.65));
+}
+
+.bottle-photo.is-small {
+  transform: scale(0.78);
+  transform-origin: center bottom;
+}
+
+.reflect .bottle-photo {
+  -webkit-box-reflect: below 2px linear-gradient(transparent 72%, rgba(255, 255, 255, 0.16));
+}
+
+/* Coloured light behind a bottle. */
+.bottle-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.bottle-glow::before {
+  content: "";
+  position: absolute;
+  inset: 8% -6% 4%;
+  z-index: -1;
+  background: radial-gradient(50% 48% at 50% 58%, color-mix(in srgb, var(--glow, var(--gold)) 38%, transparent), transparent 72%);
+  filter: blur(6px);
+  pointer-events: none;
 }
 
 .header-actions {
@@ -626,10 +656,7 @@ button {
 .hero-tile {
   position: absolute;
   display: block;
-  aspect-ratio: 540 / 840;
-  border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 50px 120px -40px color-mix(in srgb, var(--glow) 70%, transparent), 0 30px 60px -20px rgba(0, 0, 0, 0.8);
+  aspect-ratio: 441 / 675;
   transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -638,17 +665,17 @@ button {
 }
 
 .hero-tile-front {
-  width: min(46%, 290px);
-  left: 10%;
-  bottom: 0;
+  width: min(44%, 280px);
+  left: 12%;
+  bottom: 8%;
   z-index: 1;
   animation: float 9s ease-in-out infinite;
 }
 
 .hero-tile-back {
-  width: min(38%, 240px);
-  right: 4%;
-  top: 4%;
+  width: min(36%, 230px);
+  right: 8%;
+  bottom: 20%;
   animation: float 11s ease-in-out infinite reverse;
 }
 
@@ -825,9 +852,8 @@ button {
 }
 
 .launch-media {
-  aspect-ratio: 540 / 840;
-  border-radius: var(--radius);
-  overflow: hidden;
+  aspect-ratio: 441 / 675;
+  padding: 6% 8% 14%;
 }
 
 .launch-bottle {
@@ -835,7 +861,7 @@ button {
 }
 
 .launch-card:hover .launch-bottle {
-  transform: scale(1.05);
+  transform: translateY(-8px) rotate(-2deg);
 }
 
 .launch-body h3 {
@@ -975,9 +1001,8 @@ button {
 .collection-media {
   display: block;
   width: 100%;
-  aspect-ratio: 540 / 840;
-  border-radius: var(--radius);
-  overflow: hidden;
+  aspect-ratio: 441 / 675;
+  padding: 4% 6% 10%;
   margin-bottom: 12px;
 }
 
@@ -986,7 +1011,7 @@ button {
 }
 
 .collection-item:hover .collection-bottle {
-  transform: scale(1.06);
+  transform: translateY(-8px);
 }
 
 .collection-color {
@@ -1130,12 +1155,8 @@ button {
 }
 
 .format-bottle {
-  border-radius: var(--radius);
-}
-
-.format-bottle.is-small {
-  transform: scale(0.8);
-  transform-origin: bottom center;
+  aspect-ratio: 441 / 675;
+  height: auto;
 }
 
 .format {
@@ -1327,7 +1348,8 @@ button {
 .product-card-media {
   position: relative;
   aspect-ratio: 4 / 5;
-  overflow: hidden;
+  padding: 10% 18% 12%;
+  --glow: var(--accent);
 }
 
 .product-card-bottle {
@@ -1335,7 +1357,7 @@ button {
 }
 
 .product-card:hover .product-card-bottle {
-  transform: scale(1.05);
+  transform: translateY(-8px);
 }
 
 .product-card.is-upcoming .product-card-bottle {
@@ -1405,25 +1427,21 @@ button {
   align-items: center;
   justify-content: center;
   aspect-ratio: 1 / 1.05;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  overflow: hidden;
 }
 
 .pdp-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(50% 45% at 50% 60%, color-mix(in srgb, var(--glow) 30%, transparent), transparent 75%);
+  background: radial-gradient(45% 42% at 50% 55%, color-mix(in srgb, var(--glow) 34%, transparent), transparent 72%);
+  filter: blur(10px);
 }
 
 .pdp-media .pdp-bottle {
   position: relative;
-  height: 100%;
+  height: 74%;
   width: auto;
-  object-fit: contain;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
+  margin-bottom: 8%;
+  -webkit-box-reflect: below 2px linear-gradient(transparent 74%, rgba(255, 255, 255, 0.16));
 }
 
 .pdp-name {
@@ -1703,9 +1721,9 @@ button {
 
 .cart-line-media {
   display: block;
-  aspect-ratio: 540 / 840;
-  overflow: hidden;
-  background: var(--surface-2);
+  aspect-ratio: 441 / 675;
+  padding: 4px;
+  background: radial-gradient(60% 50% at 50% 60%, rgba(216, 191, 138, 0.14), transparent 75%), var(--surface-2);
   border-radius: var(--radius);
 }
 
@@ -2259,19 +2277,35 @@ button {
 
 .scent-cameo {
   position: absolute;
-  aspect-ratio: 540 / 840;
+  aspect-ratio: 441 / 675;
   opacity: 0;
-  filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0 28px 30px rgba(0, 0, 0, 0.7));
   will-change: transform, opacity;
 }
 
 .scent-cameo img {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
-  mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  object-fit: contain;
+}
+
+/* The same cut-out twice: the cap (atomiser) on top so it can be pressed. */
+.scent-cameo-cap {
+  clip-path: inset(0 0 72% 0);
+}
+
+.scent-cameo-body {
+  clip-path: inset(27.5% 0 0 0);
+}
+
+.scent-cameo-glow {
+  position: absolute;
+  inset: 10% -30% 0;
+  background: radial-gradient(50% 45% at 50% 55%, color-mix(in srgb, var(--glow) 45%, transparent), transparent 72%);
+  filter: blur(8px);
 }
 
 .reveal {

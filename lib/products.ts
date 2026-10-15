@@ -218,8 +218,13 @@ export const products: Product[] = [
   },
 ];
 
+// Studio photo (with backdrop) and the cut-out bottle used across the site.
 export function productImage(slug: string): string {
   return `/products/${slug}.jpg`;
+}
+
+export function productCutout(slug: string): string {
+  return `/products/cutout/${slug}.webp`;
 }
 
 export function getProduct(slug: string): Product | undefined {

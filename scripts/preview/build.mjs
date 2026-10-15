@@ -38,11 +38,11 @@ const between = (html, start, end) => {
 
 // Photos and wordmarks are embedded so the page needs no other files.
 const dataUri = (file, type) => `data:${type};base64,${fs.readFileSync(path.join(repo, "public", file)).toString("base64")}`;
-const images = Object.fromEntries(products.map((p) => [p.slug, dataUri(`products/${p.slug}.jpg`, "image/jpeg")]));
+const images = Object.fromEntries(products.map((p) => [p.slug, dataUri(`products/cutout/${p.slug}.webp`, "image/webp")]));
 const brand = ["caprava", "tittara", "souverian"];
 const localAssets = (html) =>
   html
-    .replace(/src="\/products\/([a-z]+)\.jpg"/g, 'data-img="$1"')
+    .replace(/src="\/products\/cutout\/([a-z]+)\.webp"/g, 'data-img="$1"')
     .replace(/url\(\/brand\/([a-z]+)\.svg\)/g, "var(--wm-$1)");
 
 const pages = {};

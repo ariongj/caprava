@@ -2,14 +2,14 @@
 
 import { useEffect, useRef } from "react";
 import { focusedScent, startScentShow, type Scent } from "@/lib/mist";
-import { productImage, products } from "@/lib/products";
+import { productCutout, products } from "@/lib/products";
 
 // The order the bottles appear in as you scroll: black, then red, then the rest.
 const ORDER = ["souverian", "pasion", "tittara", "elegance", "freski", "ngrohtesi", "feminitet", "pasterti"];
 
 export const scents: Scent[] = ORDER.map((slug) => {
   const p = products.find((x) => x.slug === slug)!;
-  return { slug, color: p.hex.glow, image: productImage(slug) };
+  return { slug, color: p.hex.glow, image: productCutout(slug) };
 });
 
 export function ScentMist() {
