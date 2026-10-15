@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PartnerForm } from "@/components/Forms";
+import { Icon, type IconName } from "@/components/Icon";
 import { Divider, SectionTitle } from "@/components/Sparkle";
 import { getDictionary, isLocale } from "@/lib/i18n";
 
@@ -21,6 +22,9 @@ export default async function Partners({ params }: { params: Promise<{ lang: str
       <div className="partner-types">
         {Object.entries(t.partners.types).map(([key, v], i) => (
           <div key={key} className="pillar">
+            <span className="pillar-icon">
+              <Icon name={({ partner: "store", distributor: "globe", influencer: "star", investor: "chart" } as Record<string, IconName>)[key]} />
+            </span>
             <span className="pillar-num">0{i + 1}</span>
             <h3>{v.title}</h3>
             <p className="muted">{v.text}</p>

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Icon, type IconName } from "@/components/Icon";
 import { NotesPalette } from "@/components/Notes";
+import { Milestones } from "@/components/Sections";
 import { Divider, SectionTitle, SparkleIcon } from "@/components/Sparkle";
 import { href } from "@/lib/format";
 import { getDictionary, isLocale } from "@/lib/i18n";
@@ -62,6 +64,9 @@ export default async function Story({ params }: { params: Promise<{ lang: string
           <div className="pillars">
             {s.values.map((v, i) => (
               <div key={v.title} className="pillar">
+                <span className="pillar-icon">
+                  <Icon name={(["shield", "sparkle", "diamond"] as IconName[])[i]} />
+                </span>
                 <span className="pillar-num">0{i + 1}</span>
                 <h3>{v.title}</h3>
                 <p className="muted">{v.text}</p>
@@ -91,12 +96,20 @@ export default async function Story({ params }: { params: Promise<{ lang: string
         </section>
 
         <section className="section">
+          <Divider />
+          <SectionTitle eyebrow={t.milestones.eyebrow} title={t.milestones.title} />
+          <Milestones t={t} />
+        </section>
+
+        <section className="section">
           <Divider side="right" />
           <SectionTitle title={s.roadmapTitle} text={s.roadmapText} />
           <ol className="roadmap">
             {s.roadmap.map((r) => (
               <li key={r.year}>
-                <span className="roadmap-year">{r.year}</span>
+                <span className="roadmap-year">
+                  <Icon name="globe" /> {r.year}
+                </span>
                 <div>
                   <p className="roadmap-title">{r.title}</p>
                   <p className="muted small">{r.markets}</p>

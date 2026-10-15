@@ -270,6 +270,126 @@ const sq = {
   legal: {
     draft: "Draft — ky tekst duhet të rishikohet nga juristi përpara publikimit.",
   },
+  preview: {
+    bar: "Pamje paraprake · porositë dhe formularët nuk dërgohen nga kjo faqe",
+    order: "Kjo është një pamje paraprake e dyqanit. Porosia nuk u dërgua dhe asnjë e dhënë nuk u ruajt.",
+    form: "Pamje paraprake — mesazhi nuk u dërgua.",
+  },
+
+  nav2: { search: "Kërko", wishlist: "Të preferuarat", finder: "Gjej aromën", faq: "Pyetje" },
+  trust: [
+    { icon: "truck", title: "Transport falas", text: "Për porosi mbi 100 €" },
+    { icon: "cash", title: "Pagesa në dorëzim", text: "Paguaj kur ta pranosh" },
+    { icon: "shield", title: "100% origjinale", text: "Paketim zyrtar CAPRAVA" },
+    { icon: "returns", title: "Kthim brenda 14 ditëve", text: "Për produkte të pahapura" },
+  ],
+  marquee: ["Aroma", "Dizajni", "Historia", "Greatest Of All Time", "From Kosovo to the world"],
+  milestones: {
+    eyebrow: "Rrugëtimi",
+    title: "Nga një ide në një identitet",
+    items: [
+      { year: "2015", title: "Frymëzimi", text: "Ideja lind në Francë, pranë një krijuesi profesionist parfumesh." },
+      { year: "2025", title: "Vizioni", text: "Frymëzimi kthehet në një plan konkret: CAPRAVA." },
+      { year: "2027", title: "Lansimi", text: "Souverian dhe Tittara dalin në Kosovë dhe në rajon." },
+      { year: "2036", title: "Bota", text: "Synimi: një milion parfume, nga Kosova në botë." },
+    ],
+  },
+  finderCta: {
+    eyebrow: "Gjej aromën tënde",
+    title: "Cila fragrancë të përfaqëson?",
+    text: "Tri pyetje të shkurtra dhe të tregojmë fragrancën CAPRAVA që i përshtatet karakterit tënd.",
+    cta: "Fillo testin",
+  },
+  finder: {
+    title: "Gjej aromën tënde",
+    lead: "Tri pyetje. Një identitet.",
+    step: "Pyetja {n} nga {total}",
+    back: "Mbrapa",
+    restart: "Fillo përsëri",
+    resultEyebrow: "Fragranca jote",
+    resultText: "Bazuar në zgjedhjet e tua, kjo është fragranca që të përfaqëson.",
+    day: "E freskët dhe e sigurt — e përkryer për ditën.",
+    night: "Plot prezencë — e krijuar për mbrëmjet që mbahen mend.",
+    always: "E balancuar për çdo moment — nga mëngjesi deri natën.",
+    alsoUpcoming: "Nga koleksioni i ardhshëm do të të pëlqejë",
+    shop: "Shiko fragrancën",
+    questions: [
+      {
+        id: "gender",
+        q: "Për kë është fragranca?",
+        options: [
+          { id: "her", label: "Për femra", icon: "floral" },
+          { id: "him", label: "Për meshkuj", icon: "woody" },
+        ],
+      },
+      {
+        id: "moment",
+        q: "Kur do ta mbash më shumë?",
+        options: [
+          { id: "day", label: "Gjatë ditës", icon: "sun" },
+          { id: "night", label: "Në mbrëmje", icon: "moon" },
+          { id: "always", label: "Çdo ditë, kudo", icon: "clock" },
+        ],
+      },
+      {
+        id: "family",
+        q: "Cila familje aromash të tërheq?",
+        options: [
+          { id: "fresh", label: "E freskët", icon: "citrus" },
+          { id: "floral", label: "Lulore", icon: "floral" },
+          { id: "warm", label: "E ngrohtë & erëzore", icon: "spice" },
+          { id: "woody", label: "Drurore & misterioze", icon: "woody" },
+          { id: "sweet", label: "E ëmbël & kremoze", icon: "gourmand" },
+        ],
+      },
+    ],
+  },
+  wishlist: {
+    title: "Të preferuarat",
+    lead: "Fragrancat që ke ruajtur.",
+    empty: "Ende nuk ke ruajtur asnjë fragrancë.",
+    add: "Shto te të preferuarat",
+    remove: "Hiq nga të preferuarat",
+  },
+  search: {
+    title: "Kërko",
+    placeholder: "Kërko fragrancë, ngjyrë ose notë…",
+    hint: "Provo: vanilje, mister, vjollcë",
+    noResults: "Asnjë fragrancë nuk përputhet me kërkimin.",
+  },
+  pdp: {
+    details: "Përshkrimi",
+    notes: "Notat",
+    howTo: "Si ta mbash",
+    howToText: [
+      "Spërkate në pikat e pulsit — qafë, kyçe dhe pas veshëve — nga 15–20 cm larg.",
+      "Mos i fërko kyçet pas spërkatjes; lëre aromën të zhvillohet natyrshëm.",
+      "Për një gjurmë më të gjatë, spërkate lehtë edhe në rroba.",
+    ],
+    delivery: "Dërgesa & kthimi",
+    deliveryText: [
+      "Dërgesa në Kosovë brenda 1–3 ditëve të punës; në rajon brenda 3–6 ditëve.",
+      "Transport falas për porosi mbi 100 €. Pagesa në dorëzim ose me kartelë.",
+      "Kthim brenda 14 ditëve për produkte të pahapura.",
+    ],
+    sprays: "rreth {n} spërkatje",
+  },
+  faq: {
+    title: "Pyetje të shpeshta",
+    lead: "Gjithçka që duhet të dish para se të porositësh.",
+    more: "Ke një pyetje tjetër?",
+    items: [
+      { q: "Kur arrin porosia ime?", a: "Porositë në Kosovë arrijnë zakonisht brenda 1–3 ditëve të punës, ndërsa në Shqipëri, Maqedoni të Veriut dhe Mal të Zi brenda 3–6 ditëve." },
+      { q: "Si mund të paguaj?", a: "Me para në dorë kur ta pranosh porosinë, ose me kartelë bankare përmes një pagese të sigurt online." },
+      { q: "Sa kushton transporti?", a: "Transporti është falas për porosi mbi 100 €. Për porosi më të vogla, kostoja shfaqet në pagesë sipas shtetit." },
+      { q: "A janë produktet origjinale?", a: "Po. Çdo fragrancë CAPRAVA dërgohet në paketimin zyrtar, direkt nga ne ose nga partnerët tanë të autorizuar." },
+      { q: "Cilën madhësi të zgjedh?", a: "15 ML është hyrja ideale në botën e CAPRAVA-s dhe e lehtë për udhëtime — rreth 150 spërkatje. 75 ML është formati kryesor — rreth 750 spërkatje." },
+      { q: "Sa zgjat aroma?", a: "Fragrancat CAPRAVA ndërtohen mbi nota bazë të thella — drurore, amberike dhe musk — që qëndrojnë gjatë në lëkurë. Kohëzgjatja ndryshon sipas lëkurës dhe motit." },
+      { q: "A mund ta kthej një produkt?", a: "Po, brenda 14 ditëve nga pranimi, nëse produkti është i pahapur dhe në paketimin origjinal." },
+      { q: "Kur dalin fragrancat e tjera?", a: "Gjashtë fragrancat e tjera të koleksionit lansohen në fazën e zgjerimit. Lër email-in në faqen e fragrancës dhe do të të njoftojmë të parin." },
+    ],
+  },
+  footer2: { newsletter: "Lajme nga CAPRAVA", pay: "Pagesa", follow: "Na ndiq" },
 };
 
 export type Dictionary = typeof sq;
@@ -538,6 +658,126 @@ const en: Dictionary = {
   legal: {
     draft: "Draft — this text must be reviewed by a lawyer before publication.",
   },
+  preview: {
+    bar: "Preview · orders and forms are not sent from this site",
+    order: "This is a preview of the store. The order was not sent and no details were stored.",
+    form: "Preview — this message was not sent.",
+  },
+
+  nav2: { search: "Search", wishlist: "Wishlist", finder: "Find your scent", faq: "FAQ" },
+  trust: [
+    { icon: "truck", title: "Free shipping", text: "On orders over €100" },
+    { icon: "cash", title: "Cash on delivery", text: "Pay when it arrives" },
+    { icon: "shield", title: "100% authentic", text: "Official CAPRAVA packaging" },
+    { icon: "returns", title: "14-day returns", text: "On unopened products" },
+  ],
+  marquee: ["Scent", "Design", "Story", "Greatest Of All Time", "From Kosovo to the world"],
+  milestones: {
+    eyebrow: "The journey",
+    title: "From an idea to an identity",
+    items: [
+      { year: "2015", title: "The inspiration", text: "The idea is born in France, alongside a professional perfumer." },
+      { year: "2025", title: "The vision", text: "The inspiration becomes a concrete plan: CAPRAVA." },
+      { year: "2027", title: "The launch", text: "Souverian and Tittara arrive in Kosovo and the region." },
+      { year: "2036", title: "The world", text: "The goal: one million perfumes, from Kosovo to the world." },
+    ],
+  },
+  finderCta: {
+    eyebrow: "Find your scent",
+    title: "Which fragrance is you?",
+    text: "Three short questions and we will show you the CAPRAVA fragrance that matches your character.",
+    cta: "Start the quiz",
+  },
+  finder: {
+    title: "Find your scent",
+    lead: "Three questions. One identity.",
+    step: "Question {n} of {total}",
+    back: "Back",
+    restart: "Start again",
+    resultEyebrow: "Your fragrance",
+    resultText: "Based on your choices, this is the fragrance that represents you.",
+    day: "Fresh and assured — perfect for the day.",
+    night: "Full of presence — made for evenings to remember.",
+    always: "Balanced for every moment — from morning to night.",
+    alsoUpcoming: "From the upcoming collection you will also love",
+    shop: "View the fragrance",
+    questions: [
+      {
+        id: "gender",
+        q: "Who is the fragrance for?",
+        options: [
+          { id: "her", label: "For her", icon: "floral" },
+          { id: "him", label: "For him", icon: "woody" },
+        ],
+      },
+      {
+        id: "moment",
+        q: "When will you wear it most?",
+        options: [
+          { id: "day", label: "During the day", icon: "sun" },
+          { id: "night", label: "In the evening", icon: "moon" },
+          { id: "always", label: "Every day, everywhere", icon: "clock" },
+        ],
+      },
+      {
+        id: "family",
+        q: "Which scent family draws you in?",
+        options: [
+          { id: "fresh", label: "Fresh", icon: "citrus" },
+          { id: "floral", label: "Floral", icon: "floral" },
+          { id: "warm", label: "Warm & spicy", icon: "spice" },
+          { id: "woody", label: "Woody & mysterious", icon: "woody" },
+          { id: "sweet", label: "Sweet & creamy", icon: "gourmand" },
+        ],
+      },
+    ],
+  },
+  wishlist: {
+    title: "Wishlist",
+    lead: "The fragrances you have saved.",
+    empty: "You have not saved any fragrances yet.",
+    add: "Add to wishlist",
+    remove: "Remove from wishlist",
+  },
+  search: {
+    title: "Search",
+    placeholder: "Search a fragrance, colour or note…",
+    hint: "Try: vanilla, mystery, violet",
+    noResults: "No fragrance matches your search.",
+  },
+  pdp: {
+    details: "Description",
+    notes: "Notes",
+    howTo: "How to wear it",
+    howToText: [
+      "Spray on your pulse points — neck, wrists and behind the ears — from 15–20 cm away.",
+      "Do not rub your wrists together; let the scent unfold naturally.",
+      "For a longer trail, mist lightly over your clothes as well.",
+    ],
+    delivery: "Delivery & returns",
+    deliveryText: [
+      "Delivery within Kosovo in 1–3 working days; in the region within 3–6 days.",
+      "Free shipping on orders over €100. Cash on delivery or card payment.",
+      "Returns within 14 days for unopened products.",
+    ],
+    sprays: "about {n} sprays",
+  },
+  faq: {
+    title: "Frequently asked questions",
+    lead: "Everything you need to know before you order.",
+    more: "Another question?",
+    items: [
+      { q: "When will my order arrive?", a: "Orders within Kosovo usually arrive in 1–3 working days; Albania, North Macedonia and Montenegro in 3–6 days." },
+      { q: "How can I pay?", a: "In cash when you receive your order, or by card through a secure online payment." },
+      { q: "How much is shipping?", a: "Shipping is free on orders over €100. For smaller orders, the cost is shown at checkout based on your country." },
+      { q: "Are the products authentic?", a: "Yes. Every CAPRAVA fragrance ships in its official packaging, directly from us or from our authorised partners." },
+      { q: "Which size should I choose?", a: "15 ML is the perfect introduction to CAPRAVA and easy to travel with — about 150 sprays. 75 ML is the signature format — about 750 sprays." },
+      { q: "How long does the scent last?", a: "CAPRAVA fragrances are built on deep base notes — woods, amber and musk — that stay on the skin for a long time. Longevity varies with skin and weather." },
+      { q: "Can I return a product?", a: "Yes, within 14 days of receiving it, if the product is unopened and in its original packaging." },
+      { q: "When will the other fragrances launch?", a: "The six remaining fragrances launch during the expansion phase. Leave your email on the fragrance's page and we will tell you first." },
+    ],
+  },
+  footer2: { newsletter: "News from CAPRAVA", pay: "Payment", follow: "Follow us" },
 };
 
 const dictionaries: Record<Locale, Dictionary> = { sq, en };

@@ -1,3 +1,4 @@
+import { asset } from "./asset";
 import type { Locale } from "./i18n";
 
 type T = Record<Locale, string>;
@@ -220,11 +221,11 @@ export const products: Product[] = [
 
 // Studio photo (with backdrop) and the cut-out bottle used across the site.
 export function productImage(slug: string): string {
-  return `/products/${slug}.jpg`;
+  return asset(`/products/${slug}.jpg`);
 }
 
 export function productCutout(slug: string, width?: 360): string {
-  return `/products/cutout/${slug}${width ? `-${width}` : ""}.webp`;
+  return asset(`/products/cutout/${slug}${width ? `-${width}` : ""}.webp`);
 }
 
 export function getProduct(slug: string): Product | undefined {

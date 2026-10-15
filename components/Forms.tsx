@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { isStaticExport } from "@/lib/asset";
 import { useI18n } from "./I18nProvider";
 
 type Status = "idle" | "sending" | "done" | "error";
 
 async function submitInquiry(kind: string, data: Record<string, string>): Promise<boolean> {
+  // The static site has no server to receive the message.
+  if (isStaticExport) return true;
   try {
     const res = await fetch("/api/inquiry", {
       method: "POST",
@@ -36,7 +39,7 @@ export function EmailCapture({ kind, product, placeholder, cta, thanks }: { kind
   const { locale, t } = useI18n();
   const [status, setStatus] = useState<Status>("idle");
 
-  if (status === "done") return <p className="form-success">{thanks}</p>;
+  if (status === "done") return <p className="form-success">{isStaticExport ? t.preview.form : thanks}</p>;
 
   return (
     <form
@@ -61,7 +64,7 @@ export function EmailCapture({ kind, product, placeholder, cta, thanks }: { kind
 export function ContactForm() {
   const { locale, t } = useI18n();
   const [status, setStatus] = useState<Status>("idle");
-  if (status === "done") return <p className="form-success">{t.contact.thanks}</p>;
+  if (status === "done") return <p className="form-success">{isStaticExport ? t.preview.form : t.contact.thanks}</p>;
   return (
     <form
       className="form"
@@ -97,7 +100,7 @@ export function ContactForm() {
 export function PartnerForm({ initialType = "partner" }: { initialType?: string }) {
   const { locale, t } = useI18n();
   const [status, setStatus] = useState<Status>("idle");
-  if (status === "done") return <p className="form-success">{t.partners.thanks}</p>;
+  if (status === "done") return <p className="form-success">{isStaticExport ? t.preview.form : t.partners.thanks}</p>;
   const types = Object.entries(t.partners.types);
   return (
     <form

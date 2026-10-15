@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { isStaticExport } from "@/lib/asset";
 import { shipping, shippingCost } from "@/lib/config";
 import { fill } from "@/lib/i18n";
 import { formatPrice, href } from "@/lib/format";
@@ -39,6 +40,12 @@ export function CheckoutForm({ cardEnabled }: { cardEnabled: boolean }) {
     setBusy(true);
     setError("");
     const customer = Object.fromEntries(Array.from(new FormData(e.currentTarget).entries()).map(([k, v]) => [k, String(v)]));
+    if (isStaticExport) {
+      // No server on the static preview: show the confirmation without sending anything.
+      clear();
+      router.push(href(locale, "/checkout/success"));
+      return;
+    }
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",

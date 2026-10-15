@@ -7,11 +7,15 @@ import { EmailCapture } from "@/components/Forms";
 import { NotesPyramid } from "@/components/Notes";
 import { ProductCard } from "@/components/ProductCard";
 import { Divider } from "@/components/Sparkle";
+import { Icon } from "@/components/Icon";
+import { TrustBar } from "@/components/Sections";
+import { StickyBuyBar } from "@/components/StickyBuyBar";
+import { WishButton } from "@/components/WishButton";
 import { ProductName } from "@/components/Wordmark";
 import { site, sizes } from "@/lib/config";
 import { href } from "@/lib/format";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
-import { getProduct, products } from "@/lib/products";
+import { getProduct, notes, products } from "@/lib/products";
 
 export function generateStaticParams() {
   return locales.flatMap((lang) => products.map((p) => ({ lang, slug: p.slug })));
@@ -92,25 +96,68 @@ export default async function ProductPage({ params }: { params: Promise<{ lang: 
             </div>
           )}
 
+          <WishButton slug={product.slug} withLabel className="pdp-wish" />
+
           <dl className="pdp-facts">
             <div>
-              <dt>{t.product.character}</dt>
+              <dt>
+                <Icon name="sparkle" /> {t.product.character}
+              </dt>
               <dd>{product.character[lang]}</dd>
             </div>
             <div>
-              <dt>{t.product.color}</dt>
+              <dt>
+                <Icon name="drop" /> {t.product.color}
+              </dt>
               <dd>{product.color[lang]}</dd>
             </div>
           </dl>
-          {product.available && (
-            <ul className="pdp-assurances">
-              <li>{t.product.shipping}</li>
-              <li>{t.product.payment}</li>
-              <li>{t.product.authentic}</li>
-            </ul>
-          )}
+
+          <div className="accordion">
+            {product.notes.top.length > 0 && (
+              <details open>
+                <summary>
+                  <Icon name="leaf" /> {t.pdp.notes}
+                </summary>
+                <ul className="note-chips">
+                  {[...product.notes.top, ...product.notes.middle, ...product.notes.base].map((k) => (
+                    <li key={k}>{notes[k].name[lang]}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
+            <details>
+              <summary>
+                <Icon name="spray" /> {t.pdp.howTo}
+              </summary>
+              <ul className="accordion-list">
+                {t.pdp.howToText.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </details>
+            <details>
+              <summary>
+                <Icon name="truck" /> {t.pdp.delivery}
+              </summary>
+              <ul className="accordion-list">
+                {t.pdp.deliveryText.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+            </details>
+          </div>
         </div>
       </div>
+
+      {product.available && (
+        <>
+          <div className="section">
+            <TrustBar t={t} />
+          </div>
+          <StickyBuyBar slug={product.slug} name={name} />
+        </>
+      )}
 
       {product.notes.top.length > 0 && (
         <section className="section">

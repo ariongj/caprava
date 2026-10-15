@@ -6,8 +6,10 @@ import { CartProvider } from "@/components/CartProvider";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { I18nProvider } from "@/components/I18nProvider";
+import { PreviewBar } from "@/components/PreviewBar";
 import { Reveal } from "@/components/Reveal";
 import { ScentMist } from "@/components/ScentMist";
+import { WishlistProvider } from "@/components/WishlistProvider";
 import { site } from "@/lib/config";
 import { getDictionary, isLocale, locales } from "@/lib/i18n";
 import "../globals.css";
@@ -45,6 +47,7 @@ export default async function LangLayout({ children, params }: { children: React
       <body>
         <I18nProvider locale={lang} t={t}>
           <CartProvider>
+            <WishlistProvider>
             <a href="#main" className="skip-link">
               Skip to content
             </a>
@@ -53,7 +56,9 @@ export default async function LangLayout({ children, params }: { children: React
             <Footer locale={lang} t={t} />
             <CartDrawer />
             <ScentMist />
+            <PreviewBar t={t} />
             <Reveal />
+            </WishlistProvider>
           </CartProvider>
         </I18nProvider>
       </body>

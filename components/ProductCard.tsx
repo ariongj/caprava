@@ -4,6 +4,7 @@ import { formatPrice, href } from "@/lib/format";
 import type { Dictionary, Locale } from "@/lib/i18n";
 import type { Product } from "@/lib/products";
 import { Bottle } from "./Bottle";
+import { WishButton } from "./WishButton";
 import { ProductName } from "./Wordmark";
 
 export function ProductCard({ product, locale, t }: { product: Product; locale: Locale; t: Dictionary }) {
@@ -16,6 +17,7 @@ export function ProductCard({ product, locale, t }: { product: Product; locale: 
       <div className="product-card-media bottle-glow">
         <Bottle product={product} className="product-card-bottle" />
         {!product.available && <span className="badge">{t.common.comingSoon}</span>}
+        <WishButton slug={product.slug} className="on-media" />
       </div>
       <div className="product-card-body">
         <p className="product-card-meta">

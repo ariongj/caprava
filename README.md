@@ -10,6 +10,7 @@ Built with Next.js 15 (App Router) and TypeScript, in Albanian (`/sq`, default) 
 - **Product pages** — size selector (15 ML 28 € · 75 ML 149 €), add to bag, olfactory pyramid, product structured data for Google. Upcoming fragrances show a "notify me" form instead.
 - **Bag** — slide‑out drawer and a full cart page, saved in the browser, with a free‑shipping progress bar.
 - **Checkout** — contact and delivery form, shipping by country (Kosovo, Albania, North Macedonia, Montenegro), **cash on delivery**, and **card payment through Stripe** when it's configured. Prices are always recalculated on the server.
+- **Search**, **wishlist**, a **fragrance finder** quiz and an **FAQ** page.
 - **Story**, **Partnerships** (retail partners, distributors, creators/ambassadors, investors — with an enquiry form), **Contact**, and draft **Terms / Privacy / Shipping & returns** pages.
 - Sitemap, robots.txt, per‑page SEO metadata, language switcher that remembers the choice.
 
@@ -31,11 +32,9 @@ npm run dev        # http://localhost:3000
 
 Any host that runs Node.js works as well (Netlify, Render, a VPS with `npm run build && npm start`).
 
-## Shareable preview
+## GitHub Pages (static preview)
 
-`preview/index.html` is a single-file preview of the store that opens in any browser without a server (double-click it, or host it anywhere static). Shopping, the bag and checkout are clickable, but orders and forms are not sent — a bar at the bottom says so.
-
-Regenerate it after changing the site: run the store (`npm run build && npm start`), then `npm run preview` (or `node scripts/preview/build.mjs http://localhost:3000`).
+`npm run export:static` builds the whole site as static files in `out/`, served under `/caprava` (pass another base path as an argument: `node scripts/export-static.mjs /my-path`). Everything works there (shop, search, wishlist, fragrance finder, bag, animations) except that orders and forms are not sent, since there is no server; a bar at the bottom says so. Publish by copying `out/` to the `gh-pages` branch.
 
 ## Bottle cut-outs
 

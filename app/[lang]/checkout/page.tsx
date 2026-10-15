@@ -4,7 +4,6 @@ import { CheckoutForm } from "@/components/CheckoutForm";
 import { SectionTitle } from "@/components/Sparkle";
 import { getDictionary, isLocale } from "@/lib/i18n";
 
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;

@@ -2,12 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Bottle } from "@/components/Bottle";
 import { EmailCapture } from "@/components/Forms";
+import { Icon, type IconName } from "@/components/Icon";
 import { NotesPalette } from "@/components/Notes";
+import { FinderCta, Marquee, Milestones, TrustBar } from "@/components/Sections";
+import { WishButton } from "@/components/WishButton";
 import { ProductName } from "@/components/Wordmark";
 import { Divider, SectionTitle, SparkleIcon } from "@/components/Sparkle";
 import { sizes } from "@/lib/config";
 import { formatPrice, href } from "@/lib/format";
-import { getDictionary, isLocale } from "@/lib/i18n";
+import { fill, getDictionary, isLocale } from "@/lib/i18n";
 import { products } from "@/lib/products";
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
@@ -51,6 +54,11 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </div>
       </section>
 
+      <Marquee t={t} />
+      <div className="container">
+        <TrustBar t={t} />
+      </div>
+
       <section className="section container">
         <Divider />
         <SectionTitle eyebrow={t.home.launchEyebrow} title={t.home.launchTitle} text={t.home.launchText} />
@@ -64,6 +72,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             >
               <div className="launch-media bottle-glow reflect">
                 <Bottle product={p} className="launch-bottle" />
+                <WishButton slug={p.slug} className="on-media" />
               </div>
               <div className="launch-body">
                 <p className="eyebrow">
@@ -90,6 +99,9 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         <div className="pillars">
           {t.home.pillars.map((p, i) => (
             <div key={p.title} className="pillar">
+              <span className="pillar-icon">
+                <Icon name={(["drop", "diamond", "book"] as IconName[])[i]} />
+              </span>
               <span className="pillar-num">0{i + 1}</span>
               <h3>{p.title}</h3>
               <p className="muted">{p.text}</p>
@@ -125,6 +137,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         </div>
       </section>
 
+      <div className="section container">
+        <FinderCta locale={lang} t={t} />
+      </div>
+
       <section className="section container">
         <Divider side="right" />
         <SectionTitle eyebrow={t.dna.eyebrow} title={t.dna.title} text={t.dna.text} />
@@ -145,11 +161,20 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                   <h3>{f.title}</h3>
                   <p className="muted">{f.text}</p>
                   <p className="format-price">{formatPrice(size.price, lang)}</p>
+                  <p className="format-sprays">
+                    <Icon name="spray" /> {fill(t.pdp.sprays, { n: String(f.ml * 10) })}
+                  </p>
                 </div>
               </div>
             );
           })}
         </div>
+      </section>
+
+      <section className="section container">
+        <Divider side="right" />
+        <SectionTitle eyebrow={t.milestones.eyebrow} title={t.milestones.title} />
+        <Milestones t={t} />
       </section>
 
       <section className="goat">

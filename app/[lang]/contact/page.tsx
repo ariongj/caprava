@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ContactForm } from "@/components/Forms";
+import { Icon } from "@/components/Icon";
 import { SectionTitle } from "@/components/Sparkle";
 import { site } from "@/lib/config";
 import { getDictionary, isLocale } from "@/lib/i18n";
@@ -23,7 +24,9 @@ export default async function Contact({ params }: { params: Promise<{ lang: stri
         <ContactForm />
         <aside className="contact-aside">
           <div>
-            <p className="eyebrow">{t.contact.emailUs}</p>
+            <p className="eyebrow">
+              <Icon name="mail" /> {t.contact.emailUs}
+            </p>
             <a href={`mailto:${site.email}`} className="contact-big">
               {site.email}
             </a>
@@ -37,7 +40,9 @@ export default async function Contact({ params }: { params: Promise<{ lang: stri
             </div>
           )}
           <div>
-            <p className="eyebrow">{t.contact.follow}</p>
+            <p className="eyebrow">
+              <Icon name="instagram" /> {t.contact.follow}
+            </p>
             <p>
               <a href={site.instagram} target="_blank" rel="noreferrer">
                 Instagram
@@ -49,7 +54,9 @@ export default async function Contact({ params }: { params: Promise<{ lang: stri
             </p>
           </div>
           <div>
-            <p className="eyebrow">{t.contact.based}</p>
+            <p className="eyebrow">
+              <Icon name="pin" /> {t.contact.based}
+            </p>
             <p>{site.location}</p>
           </div>
         </aside>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { site, sizes } from "@/lib/config";
 import { formatPrice } from "@/lib/format";
+import { fill } from "@/lib/i18n";
 import { useCart } from "./CartProvider";
 import { useI18n } from "./I18nProvider";
 
@@ -13,7 +14,7 @@ export function AddToCart({ slug }: { slug: string }) {
   const selected = sizes.find((s) => s.ml === ml)!;
 
   return (
-    <div className="add-to-cart">
+    <div className="add-to-cart" id="add-to-cart" data-ml={ml}>
       <p className="field-label">{t.common.size}</p>
       <div className="size-options" role="radiogroup" aria-label={t.common.size}>
         {sizes.map((s) => (
@@ -27,6 +28,7 @@ export function AddToCart({ slug }: { slug: string }) {
             <span className="size-ml">{s.ml} ML</span>
             <span className="size-label">{s.label[locale]}</span>
             <span className="size-price">{formatPrice(s.price, locale)}</span>
+            <span className="size-sprays">{fill(t.pdp.sprays, { n: String(s.ml * 10) })}</span>
           </button>
         ))}
       </div>
