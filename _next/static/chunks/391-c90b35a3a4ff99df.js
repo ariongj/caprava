@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[391],{2391:(e,n,u)=>{u.d(n,{GS:()=>l,IB:()=>r});let r=["sq","en"];function l(e,n){return e.replace(/\{(\w+)\}/g,(e,u)=>{var r;return null!=(r=n[u])?r:""})}}}]);
